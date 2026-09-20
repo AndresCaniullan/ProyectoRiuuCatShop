@@ -1,17 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Riuu Cat Shop</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Riuu Cat Shop - tienda virtual de productos para gatos">
+  <title>Riuu Cat Shop</title>
+  <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    Rama principal sin cambios
 
-    Version 2
+  <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
 
-    esta si nos sale 
+  <header class="header-principal">
+    <div class="contenedor-logo">
+      <a href="index.html" aria-label="Riuu Cat Shop, ir al inicio">
+        <img src="img/logo.png" alt="" width="120" height="60">
+      </a>
+    </div>
 
-    ESTOS SON MIS CMABIOSSS (ANDRES)
+    <button class="boton-menu" type="button" aria-expanded="false" aria-controls="menu-categorias">
+      <span class="sr-only">Abrir o cerrar menú de categorías</span>
+      <span aria-hidden="true">Menú</span>
+    </button>
+
+    <form class="buscador" role="search">
+      <label for="buscador" class="sr-only">Buscar productos</label>
+      <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
+      <button type="submit" aria-label="Buscar">
+        <img src="img/icono-lupa.png" alt="" width="20" height="20">
+      </button>
+    </form>
+
+    <nav class="acciones-usuario" aria-label="Cuenta y carrito">
+      <a href="#" class="btn-ingresar">Ingresar →</a>
+      <a href="pages/carrito.html" class="icono-carrito" aria-label="Ver carrito de compras">
+        <img src="img/carrito.png" alt="" width="30" height="30">
+        <span id="contador-carrito" class="contador-carrito">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <nav id="menu-categorias" class="categorias" aria-label="Categorías de productos">
+    <ul>
+      <li>
+        <a href="#" class="categoria" data-categoria="alimento">
+          <img src="img/categoria-alimento.png" alt="" width="80" height="80">
+          <span>Alimento</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="categoria" data-categoria="sanitario">
+          <img src="img/categoria-sanitario.png" alt="" width="80" height="80">
+          <span>Sanitario</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="categoria" data-categoria="juguetes">
+          <img src="img/categoria-juguetes.png" alt="" width="80" height="80">
+          <span>Juguetes</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="categoria" data-categoria="accesorios">
+          <img src="img/categoria-accesorios.png" alt="" width="80" height="80">
+          <span>Accesorios</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="categoria" data-categoria="vestimenta">
+          <img src="img/categoria-vestimenta.png" alt="" width="80" height="80">
+          <span>Vestimenta</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main id="contenido">
+
+    <div class="contenido-principal">
+
+      <section class="carrusel-ofertas" aria-label="Ofertas destacadas">
+        <h2>Ofertas destacadas</h2>
+
+        <div class="carrusel-wrapper">
+          <button type="button" class="carrusel-flecha carrusel-anterior" aria-label="Oferta anterior">‹</button>
+
+          <div id="contenedor-ofertas" class="contenedor-ofertas">
+            <!--
+              Las tarjetas de producto se generan dinámicamente desde app.js,
+              leyendo el array de data/productos.js. Cada tarjeta linkea a
+              pages/producto.html?id=N y su <img> lleva alt descriptivo
+              (el nombre real del producto), no alt="".
+            -->
+          </div>
+
+          <button type="button" class="carrusel-flecha carrusel-siguiente" aria-label="Oferta siguiente">›</button>
+        </div>
+      </section>
+
+      <aside class="publicidad" aria-label="Publicidad">
+        <h2>Publicidad</h2>
+        <!-- Imagen placeholder temporal: reemplazar img/publicidad.jpg por el banner real -->
+        <img src="img/publicidad.jpg" alt="Publicidad de productos Riuu Cat Shop" width="250" height="400">
+      </aside>
+
+    </div>
+
+  </main>
+
+  <footer class="contactos">
+    <h2>Contacto</h2>
+    <p>info@riuucatshop.com</p>
+  </footer>
+
+  <script src="data/productos.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
