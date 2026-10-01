@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Ajusta la visualización en dispositivos móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Detalle de producto - Riuu Cat Shop">
+  <title>Producto - Riuu Cat Shop</title>
+  <!-- Vincula la hoja CSS externa -->
+  <link rel="stylesheet" href="../estilos.css">
+</head>
+<body>
+  <!-- Enlace oculto para accesibilidad -->
+  <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- ============================ Encabezado =========================================== -->
+  <header class="header-principal">
+    <!-- LOGO -->
+    <div class="contenedor-logo">
+      <a href="../index.html" aria-label="Riuu Cat Shop, ir al inicio">
+        <img src="../img/logo-RiuuCatShop.png" alt="Logo Riuu Cat Shop" width="80" height="60">
+      </a>
+    </div>
+
+    <!-- Buscador -->
+    <form class="buscador" role="search">
+      <label for="buscador" class="sr-only">Buscar productos</label>
+      <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
+      <button type="submit" aria-label="Buscar">
+        <img src="../img/icono-lupa.png" alt="Buscar" width="20" height="20">
+      </button>
+    </form>
+
+    <!-- LOGIN y CARRITO -->
+    <nav class="acciones-usuario" aria-label="Cuenta y carrito">
+      <a href="#" class="btn-ingresar">Ingresar →</a>
+      <a href="carrito.html" class="icono-carrito" aria-label="Ver carrito de compras">
+        <img src="../img/icono-carrito.png" alt="Carrito" width="30" height="30">
+        <span id="contador-carrito" class="contador-carrito">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ============================ Contenido principal ================================= -->
+  <main id="contenido">
+    <h1>Detalle de producto</h1>
+
+   <section class="detalle-producto" id="detalle-producto"></section>
+
+    <!-- Productos relacionados -->
+    <section class="productos-relacionados" aria-labelledby="titulo-relacionados">
+      <h2 id="titulo-relacionados">Productos relacionados</h2>
+      <div class="relacionados-grid">
+        <div class="relacionado">
+          <img src="../img/categoria-alimento.jpeg" alt="Producto relacionado 1" width="150" height="150">
+          <p>Producto relacionado 1</p>
+        </div>
+        <div class="relacionado">
+          <img src="../img/categoria-juguete.jpeg" alt="Producto relacionado 2" width="150" height="150">
+          <p>Producto relacionado 2</p>
+        </div>
+        <div class="relacionado">
+          <img src="../img/categoria-accesorio.jpeg" alt="Producto relacionado 3" width="150" height="150">
+          <p>Producto relacionado 3</p>
+        </div>
+        <div class="relacionado">
+          <img src="../img/categoria-vestimenta.jpeg" alt="Producto relacionado 4" width="150" height="150">
+          <p>Producto relacionado 4</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ Footer ============================================= -->
+  <footer class="contactos">
+    <h2>Contacto</h2>
+    <p>info@riuucatshop.com</p>
+  </footer>
+
+  <script src="../data/productos.js" defer></script>
+  <script src="../app.js" defer></script>
+</body>
+</html>
