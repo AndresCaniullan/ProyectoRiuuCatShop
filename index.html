@@ -2,86 +2,92 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+    <!-- Ajusta la visualización en dispositivos móviles -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Riuu Cat Shop - tienda virtual de productos para gatos">
   <title>Riuu Cat Shop</title>
-  <link rel="stylesheet" href="estilos.css">
+  <!-- Vincula  a la hoja CSS externa:  -->
+  <link rel="stylesheet" href="/estilos.css">
 </head>
 <body>
-
+  <!-- Enlace oculto para accesibilidad: permite saltar directamente al contenido principal -->
   <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
 
-  <header class="header-principal">
+  <!-- ============================ Encabezado ===========================================  -->
+  <header class="header-principal"> 
+    <!-- LOGO -->
     <div class="contenedor-logo">
       <a href="index.html" aria-label="Riuu Cat Shop, ir al inicio">
-        <img src="assets/img/logo.jpeg" alt="" width="120" height="60">
+        <img src="img/logo.png" alt="" width="120" height="60">
       </a>
     </div>
-
+    <!-- Bóton para abrir/cerrar menú de categorías (pensado para móviles) -->
     <button class="boton-menu" type="button" aria-expanded="false" aria-controls="menu-categorias">
-      <span class="sr-only">Abrir o cerrar menú de categorías</span>
+      <span class="sr-only">Abrir o cerrar menú de categorías</span> 
       <span aria-hidden="true">Menú</span>
     </button>
-
+    <!-- Formulario de búsqueda con campo -->
     <form class="buscador" role="search">
       <label for="buscador" class="sr-only">Buscar productos</label>
       <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
       <button type="submit" aria-label="Buscar">
-        <img src="img/icono-lupa.png" alt="" width="20" height="20">
+        <img src="/img/icono-lupa.png" alt="" width="20" height="20">
       </button>
     </form>
-
+    <!-- LOGIN y CARRITO -->
     <nav class="acciones-usuario" aria-label="Cuenta y carrito">
       <a href="#" class="btn-ingresar">Ingresar →</a>
       <a href="pages/carrito.html" class="icono-carrito" aria-label="Ver carrito de compras">
-        <img src="img/carrito.png" alt="" width="30" height="30">
+        <img src="/img/icono-carrito.png" alt="" width="30" height="30">
         <span id="contador-carrito" class="contador-carrito">0</span>
       </a>
     </nav>
   </header>
 
+  <!-- ============================ Menú de categorias ==================================  -->
   <nav id="menu-categorias" class="categorias" aria-label="Categorías de productos">
     <ul>
       <li>
         <a href="#" class="categoria" data-categoria="alimento">
-          <img src="assets/img/categoria-alimento.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-alimento.png" alt="" width="80" height="80">
           <span>Alimento</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="sanitario">
-          <img src="assets/img/categoria-sanitario.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-sanitario.png" alt="" width="80" height="80">
           <span>Sanitario</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="juguetes">
-          <img src="assets/img/categoria-juguetes.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-juguetes.png" alt="" width="80" height="80">
           <span>Juguetes</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="accesorios">
-          <img src="assets/img/categoria-accesorios.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-accesorios.png" alt="" width="80" height="80">
           <span>Accesorios</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="vestimenta">
-          <img src="assets/img/categoria-vestimenta.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-vestimenta.png" alt="" width="80" height="80">
           <span>Vestimenta</span>
         </a>
       </li>
     </ul>
   </nav>
 
+  <!-- ============================ Contenido principal =================================  -->
   <main id="contenido">
-
     <div class="contenido-principal">
 
+      <!-- Sección carrusel de ofertas -->
       <section class="carrusel-ofertas" aria-label="Ofertas destacadas">
         <h2>Ofertas destacadas</h2>
-
+        <!-- Carrusel de ofertas -->
         <div class="carrusel-wrapper">
           <button type="button" class="carrusel-flecha carrusel-anterior" aria-label="Oferta anterior">‹</button>
 
@@ -98,6 +104,7 @@
         </div>
       </section>
 
+      <!-- Lateral de Publicidad -->
       <aside class="publicidad" aria-label="Publicidad">
         <h2>Publicidad</h2>
         <!-- Imagen placeholder temporal: reemplazar img/publicidad.jpg por el banner real -->
@@ -108,6 +115,7 @@
 
   </main>
 
+  <!-- ============================ Footer =============================================  -->
   <footer class="contactos">
     <h2>Contacto</h2>
     <p>info@riuucatshop.com</p>

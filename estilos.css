@@ -125,7 +125,7 @@ a { text-decoration: none; color: inherit; }
 /* ===== Categorías ===== */
 .categorias ul {
   list-style: none;
-  display: flex;
+  display: flex; 
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
@@ -134,23 +134,31 @@ a { text-decoration: none; color: inherit; }
 }
 
 .categoria {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: var(--color-secundario);
-  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  gap: 6px;
   text-align: center;
   font-size: 0.85rem;
-  padding: 10px;
-  transition: transform 0.15s ease;
+  color: #333;
 }
 
-.categoria img { width: 32px; height: 32px; }
+.categoria img {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;   /* 🔹 convierte la imagen en círculo */
+  object-fit: cover;    /* 🔹 recorta sin deformar */
+  display: block;
+}
+
+.categoria span {
+  font-size: 1rem;          /* 🔹 tamaño de letra más grande */
+  font-weight: 600;         /* 🔹 un poco más gruesa para destacar */
+  color: #333;              /* 🔹 tono oscuro para contraste */
+  margin-top: 8px;          /* 🔹 espacio entre la imagen y el texto */
+  letter-spacing: 0.5px;    /* 🔹 separación ligera entre letras */
+  font-family: 'Segoe UI', Arial, sans-serif; /* 🔹 tipografía limpia */
+}
 
 .categoria:hover { transform: scale(1.05); }
 
@@ -238,6 +246,191 @@ a { text-decoration: none; color: inherit; }
   padding: 16px;
   min-height: 220px;
 }
+
+
+
+/* ===== Carrito de compras ===== */
+.contenido-carrito {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.lista-carrito {
+  flex: 2; /* ocupa más espacio */
+}
+
+.resumen-compra {
+  flex: 1; /* ocupa menos espacio */
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.item-carrito {
+  display: grid;
+  grid-template-columns: 100px 1fr auto auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.item-imagen {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.item-nombre {
+  font-weight: 600;
+}
+
+.item-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-eliminar {
+  background: none;
+  border: none;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.resumen-compra h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.btn-finalizar {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: var(--color-secundario);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-finalizar:hover {
+  background: var(--color-principal);
+}
+
+
+
+
+/* ======================================================================= */
+/* ====== Detalle de producto ====== */
+.detalle-producto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin: 20px 0;
+}
+
+.producto-imagen img {
+  border-radius: 8px;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+.producto-info {
+  flex: 1;
+  min-width: 280px;
+}
+
+.producto-info h2 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+.producto-precio {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+.producto-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.producto-cantidad button {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-agregar {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: var(--color-secundario, #0077cc);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-agregar:hover {
+  background: var(--color-principal, #005fa3);
+}
+
+.producto-descripcion {
+  margin-top: 20px;
+}
+
+.producto-descripcion h3 {
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+/* ====== Productos relacionados ====== */
+.productos-relacionados {
+  margin-top: 40px;
+}
+
+.relacionados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.relacionado {
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.relacionado img {
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.relacionado:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+
+
+
 
 /* ===== Footer ===== */
 .contactos {
