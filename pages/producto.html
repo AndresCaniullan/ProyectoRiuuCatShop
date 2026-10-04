@@ -10,19 +10,17 @@
   <link rel="stylesheet" href="../estilos.css">
 </head>
 <body>
-  <!-- Enlace oculto para accesibilidad -->
+  <!-- Enlace oculto para accesibilidad: permite saltar directamente al contenido principal -->
   <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
 
   <!-- ============================ Encabezado =========================================== -->
   <header class="header-principal">
-    <!-- LOGO -->
     <div class="contenedor-logo">
       <a href="../index.html" aria-label="Riuu Cat Shop, ir al inicio">
         <img src="../img/logo-RiuuCatShop.png" alt="Logo Riuu Cat Shop" width="80" height="60">
       </a>
     </div>
 
-    <!-- Buscador -->
     <form class="buscador" role="search">
       <label for="buscador" class="sr-only">Buscar productos</label>
       <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
@@ -31,7 +29,6 @@
       </button>
     </form>
 
-    <!-- LOGIN y CARRITO -->
     <nav class="acciones-usuario" aria-label="Cuenta y carrito">
       <a href="#" class="btn-ingresar">Ingresar →</a>
       <a href="carrito.html" class="icono-carrito" aria-label="Ver carrito de compras">
@@ -45,7 +42,9 @@
   <main id="contenido">
     <h1>Detalle de producto</h1>
 
-   <section class="detalle-producto" id="detalle-producto"></section>
+    <!-- Detalle del producto: generado dinámicamente por renderizarDetalleProducto() en app.js,
+         según el id recibido por query string (producto.html?id=N) -->
+    <section class="detalle-producto" id="detalle-producto"></section>
 
     <!-- Productos relacionados -->
     <section class="productos-relacionados" aria-labelledby="titulo-relacionados">

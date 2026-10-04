@@ -1,11 +1,35 @@
+// ============================ Inicialización ============================
+// Al cargar el DOM se ejecutan las cuatro funciones principales. Cada una
+// revisa primero si los elementos que necesita existen en la página actual
+// (index, producto o carrito); si no los encuentra, no hace nada. Por eso
+// este mismo app.js puede incluirse igual en las tres páginas.
 document.addEventListener("DOMContentLoaded", () => {
   renderizarOfertas();
   actualizarContadorCarrito();
   activarFinalizarCompra();
   renderizarDetalleProducto();
+  renderizarPublicidad();
 });
 
-// Finalizar compra: exige un ingreso simulado (localStorage) antes de confirmar el pedido
+// ============================ Carrito ============================
+
+// Suma las cantidades del carrito guardado en localStorage y actualiza el
+// número que se ve junto al ícono del carrito en el header (las 3 páginas).
+function actualizarContadorCarrito() {
+  const contador = document.querySelector("#contador-carrito");
+  if (!contador) return;
+  let total = 0;
+  try {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    total = carrito.reduce((suma, item) => suma + (item.cantidad || 1), 0);
+  } catch {}
+  contador.textContent = total;
+}
+
+// Maneja el botón "Finalizar compra" de carrito.html: si no hay productos
+// avisa, si ya hay una sesión guardada completa la compra directo, y si no
+// hay sesión abre un diálogo de login simulado (solo guarda el email, nunca
+// la contraseña) antes de completarla.
 function activarFinalizarCompra() {
   const botonFinalizar = document.querySelector("#btn-finalizar");
   const dialogo = document.querySelector("#dialogo-login");
@@ -21,33 +45,38 @@ function activarFinalizarCompra() {
   const EXPRESION_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const LARGO_MINIMO_CLAVE = 6;
 
+  // Hay algo para comprar si localStorage tiene productos, o (mientras se
+  // prueba con datos de ejemplo) si el HTML ya trae filas estáticas.
   function hayProductosEnCarrito() {
     try {
       const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
       if (Array.isArray(carrito) && carrito.length > 0) return true;
     } catch {}
-    // Mientras las filas del carrito sean estáticas (de ejemplo), también cuentan
     return document.querySelectorAll("#lista-carrito .item-carrito").length > 0;
   }
 
+  // Muestra un aviso en #mensaje-compra (ej. "carrito vacío", "gracias por tu compra").
   function mostrarMensaje(texto) {
     const mensaje = document.querySelector("#mensaje-compra");
     mensaje.textContent = texto;
     mensaje.hidden = false;
   }
 
+  // Muestra un error dentro del diálogo de login y devuelve el foco al campo con el problema.
   function mostrarError(texto, campo) {
     errorLogin.textContent = texto;
     errorLogin.hidden = false;
     campo.focus();
   }
 
+  // Limpia el formulario de login y cierra el diálogo.
   function cerrarDialogo() {
     errorLogin.hidden = true;
     formulario.reset();
     dialogo.close();
   }
 
+  // Vacía el carrito (localStorage y la lista en pantalla) y muestra el mensaje de éxito.
   function completarCompra() {
     localStorage.removeItem("carrito");
     actualizarContadorCarrito();
@@ -93,28 +122,50 @@ function activarFinalizarCompra() {
   botonCancelar.addEventListener("click", cerrarDialogo);
 }
 
-// ===== Contador del carrito (header) =====
-// Corregido: ahora muestra 0 cuando el carrito está vacío.
-function actualizarContadorCarrito() {
-  const contador = document.querySelector("#contador-carrito");
-  if (!contador) return;
-  let total = 0;
-  try {
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    total = carrito.reduce((suma, item) => suma + (item.cantidad || 1), 0);
-  } catch {}
-  contador.textContent = total;
+// ============================ Carrusel ============================
+function activarFlechasCarrusel(contenedor) {
+  const tarjeta = contenedor.querySelector(".tarjeta-producto");
+  if (!tarjeta) return;
+
+  const anchoTarjeta = tarjeta.offsetWidth + 16; // incluye gap
+  const desplazamiento = anchoTarjeta * 3; // mueve 3 productos
+
+  document.querySelector(".carrusel-anterior").addEventListener("click", () => {
+    contenedor.scrollLeft -= desplazamiento;
+  });
+
+  document.querySelector(".carrusel-siguiente").addEventListener("click", () => {
+    contenedor.scrollLeft += desplazamiento;
+  });
+}
+function activarRotacionAutomatica(contenedor) {
+  const tarjeta = contenedor.querySelector(".tarjeta-producto");
+  if (!tarjeta) return;
+
+  const anchoTarjeta = tarjeta.offsetWidth + 16; // incluye gap
+  const desplazamiento = anchoTarjeta * 3; // mueve 3 productos por vez
+
+  setInterval(() => {
+    // Si llegó al final, vuelve al inicio
+    if (contenedor.scrollLeft + contenedor.clientWidth >= contenedor.scrollWidth) {
+      contenedor.scrollLeft = 0;
+    } else {
+      contenedor.scrollLeft += desplazamiento;
+    }
+  }, 4000); // cada 4 segundos
 }
 
+
+// ============================ Catálogo (ofertas destacadas) ============================
+
+// Pinta las tarjetas de producto dentro de #contenedor-ofertas (index.html),
+// mostrando solo los productos en oferta y, si se pasa categoria, filtrando además por esa categoría.
 function renderizarOfertas(categoria = null) {
   const contenedor = document.querySelector("#contenedor-ofertas");
   if (!contenedor) return;
   if (typeof productos === "undefined" || !Array.isArray(productos)) return;
 
-  // 🔹 Filtrar solo productos en oferta
   let lista = productos.filter((producto) => producto.oferta);
-
-  // 🔹 Si además se pasa una categoría, filtrar dentro de las ofertas
   if (categoria) {
     lista = lista.filter((producto) => producto.categoria === categoria);
   }
@@ -149,10 +200,50 @@ function renderizarOfertas(categoria = null) {
   });
 
   activarFlechasCarrusel(contenedor);
+  activarRotacionAutomatica(contenedor);
 }
+
+// ============================ Publicidad ============================
+
+// Pinta las tarjetas de publicidad dentro de #contenedor-publicidad (index.html),
+// mostrando solo los productos con categoria "publicidad".
+function renderizarPublicidad() {
+  const contenedor = document.querySelector("#contenedor-publicidad");
+  if (!contenedor) return;
+  if (typeof productos === "undefined" || !Array.isArray(productos)) return;
+
+  let lista = productos.filter((producto) => producto.categoria === "publicidad");
+
+  contenedor.replaceChildren();
+
+  if (lista.length === 0) {
+    const vacio = document.createElement("p");
+    vacio.textContent = "No hay publicidad disponible.";
+    contenedor.append(vacio);
+    return;
+  }
+
+  lista.forEach((producto) => {
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "publicidad";
+
+    const imagen = document.createElement("img");
+    imagen.src = producto.imagen;
+    imagen.alt = producto.nombre;
+
+    tarjeta.append(imagen);
+    contenedor.append(tarjeta);
+  });
+}
+
+
+// ============================ Detalle de producto ============================
+
+// Arma el HTML del detalle de producto dentro de #detalle-producto (pages/producto.html),
+// buscando en data/productos.js el producto cuyo id llega por query string (?id=N).
 function renderizarDetalleProducto() {
   const contenedor = document.getElementById("detalle-producto");
-  if (!contenedor) return; // si no existe el contenedor, no hace nada
+  if (!contenedor) return;
 
   const params = new URLSearchParams(window.location.search);
   const idProducto = parseInt(params.get("id"));
@@ -165,7 +256,7 @@ function renderizarDetalleProducto() {
 
   contenedor.innerHTML = `
     <div class="producto-imagen">
-      <img src="${producto.imagen}" alt="${producto.nombre}" width="300" height="300">
+      <img src=".${producto.imagen}" alt="${producto.nombre}" width="300" height="300">
     </div>
     <div class="producto-info">
       <h2>${producto.nombre}</h2>

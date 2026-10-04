@@ -7,7 +7,7 @@
   <meta name="description" content="Riuu Cat Shop - tienda virtual de productos para gatos">
   <title>Riuu Cat Shop</title>
   <!-- Vincula  a la hoja CSS externa:  -->
-  <link rel="stylesheet" href="/estilos.css">
+  <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
   <!-- Enlace oculto para accesibilidad: permite saltar directamente al contenido principal -->
@@ -18,7 +18,7 @@
     <!-- LOGO -->
     <div class="contenedor-logo">
       <a href="index.html" aria-label="Riuu Cat Shop, ir al inicio">
-        <img src="/img/logo-RiuuCatShop.png" alt="" width="80" height="60">
+        <img src="img/logo-RiuuCatShop.png" alt="" width="80" height="60">
       </a>
     </div>
     <!-- Bóton para abrir/cerrar menú de categorías (pensado para móviles) -->
@@ -31,14 +31,14 @@
       <label for="buscador" class="sr-only">Buscar productos</label>
       <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
       <button type="submit" aria-label="Buscar">
-        <img src="/img/icono-lupa.png" alt="" width="20" height="20">
+        <img src="img/icono-lupa.png" alt="" width="20" height="20">
       </button>
     </form>
     <!-- LOGIN y CARRITO -->
     <nav class="acciones-usuario" aria-label="Cuenta y carrito">
       <a href="#" class="btn-ingresar">Ingresar →</a>
       <a href="pages/carrito.html" class="icono-carrito" aria-label="Ver carrito de compras">
-        <img src="/img/icono-carrito.png" alt="" width="30" height="30">
+        <img src="img/icono-carrito.png" alt="" width="30" height="30">
         <span id="contador-carrito" class="contador-carrito">0</span>
       </a>
     </nav>
@@ -49,31 +49,31 @@
     <ul>
       <li>
         <a href="#" class="categoria" data-categoria="alimento">
-          <img src="/img/categoria-alimento.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-alimento.jpeg" alt="" width="80" height="80">
           <span>Alimento</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="sanitario">
-          <img src="/img/categoria-sanitario.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-sanitario.jpeg" alt="" width="80" height="80">
           <span>Sanitario</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="juguetes">
-          <img src="/img/categoria-juguete.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-juguete.jpeg" alt="" width="80" height="80">
           <span>Juguetes</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="accesorios">
-          <img src="/img/categoria-accesorio.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-accesorio.jpeg" alt="" width="80" height="80">
           <span>Accesorios</span>
         </a>
       </li>
       <li>
         <a href="#" class="categoria" data-categoria="vestimenta">
-          <img src="/img/categoria-vestimenta.jpeg" alt="" width="80" height="80">
+          <img src="img/categoria-vestimenta.jpeg" alt="" width="80" height="80">
           <span>Vestimenta</span>
         </a>
       </li>
@@ -105,12 +105,7 @@
       </section>
 
       <!-- Lateral de Publicidad -->
-      <aside class="publicidad" aria-label="Publicidad">
-        <h2>Publicidad</h2>
-        <!-- Imagen placeholder temporal: reemplazar img/publicidad.jpg por el banner real -->
-        <img src="img/publicidad.jpg" alt="Publicidad de productos Riuu Cat Shop" width="250" height="400">
-      </aside>
-
+        <section id="contenedor-publicidad" aria-label="Publicidad"></section>
     </div>
 
   </main>

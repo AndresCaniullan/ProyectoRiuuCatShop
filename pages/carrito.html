@@ -1,85 +1,77 @@
-<!DOCTYPE html> <!-- Declara que el documento es HTML5 -->
-<html lang="es"> <!-- Abre el documento e indica que el idioma es español -->
-<head> <!-- Abre la cabecera: datos que el navegador usa pero que no se ven en la página -->
-  <meta charset="UTF-8"> <!-- Codificación de caracteres: permite tildes y la letra ñ -->
-  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Hace que la página se adapte al ancho del celular -->
-  <meta name="description" content="Carrito de compras de Riuu Cat Shop"> <!-- Descripción breve de la página para buscadores -->
-  <title>Carrito de compras - Riuu Cat Shop</title> <!-- Texto que aparece en la pestaña del navegador -->
-  <link rel="stylesheet" href="../estilos.css"> <!-- Conecta el archivo de estilos; ../ sube un nivel desde pages/ -->
-</head> <!-- Cierra la cabecera -->
-<body> <!-- Abre el cuerpo: todo lo que se ve en la página -->
-  <a href="#contenido" class="skip-link">Saltar al contenido principal</a> <!-- Atajo para quien navega con teclado: salta directo al main -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Ajusta la visualización en dispositivos móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Carrito de compras de Riuu Cat Shop">
+  <title>Carrito de compras - Riuu Cat Shop</title>
+  <!-- Vincula la hoja CSS externa -->
+  <link rel="stylesheet" href="../estilos.css">
+</head>
+<body>
+  <!-- Enlace oculto para accesibilidad: permite saltar directamente al contenido principal -->
+  <a href="#contenido" class="skip-link">Saltar al contenido principal</a>
 
+  <!-- ============================ Encabezado =========================================== -->
+  <header class="header-principal">
+    <div class="contenedor-logo">
+      <a href="../index.html" aria-label="Riuu Cat Shop, ir al inicio">
+        <img src="../img/logo-RiuuCatShop.png" alt="" width="80" height="60">
+      </a>
+    </div>
 
-  <header class="header-principal"> <!-- Encabezado de la página, igual en las tres pantallas -->
-    <div class="contenedor-logo"> <!-- Caja genérica que agrupa el logo -->
-      <a href="../index.html" aria-label="Riuu Cat Shop, ir al inicio"> <!-- Enlace a la home; aria-label lo describe para lectores de pantalla -->
-        <img src="/img/logo-RiuuCatShop.png" alt="" width="80" height="60"> <!-- Logo; alt vacío porque el enlace ya tiene su descripción; 120x110 respeta la proporción -->
-      </a> <!-- Cierra el enlace -->
-    </div> <!-- Cierra la caja del logo -->
+    <form class="buscador" role="search">
+      <label for="buscador" class="sr-only">Buscar productos</label>
+      <input type="search" id="buscador" name="buscador" placeholder="Buscar productos...">
+      <button type="submit" aria-label="Buscar">
+        <img src="../img/icono-lupa.png" alt="" width="20" height="20">
+      </button>
+    </form>
 
+    <nav class="acciones-usuario" aria-label="Cuenta y carrito">
+      <a href="#" class="btn-ingresar">Ingresar →</a>
+      <a href="carrito.html" class="icono-carrito" aria-label="Ver carrito de compras" aria-current="page">
+        <img src="../img/icono-carrito.png" alt="" width="30" height="30">
+        <span id="contador-carrito" class="contador-carrito">3</span>
+      </a>
+    </nav>
+  </header>
 
-    <form class="buscador" role="search"> <!-- Formulario del buscador; role="search" lo marca como zona de búsqueda -->
-      <label for="buscador" class="sr-only">Buscar productos</label> <!-- Etiqueta del campo, visible solo para lectores de pantalla -->
-      <input type="search" id="buscador" name="buscador" placeholder="Buscar productos..."> <!-- Campo de búsqueda; el id coincide con el for del label -->
-      <button type="submit" aria-label="Buscar"> <!-- Botón que envía la búsqueda -->
-        <img src="/img/icono-lupa.png" alt="" width="20" height="20"> <!-- Ícono de lupa, decorativo (todavía no está creado) -->
-      </button> <!-- Cierra el botón -->
-    </form> <!-- Cierra el formulario -->
+  <!-- ============================ Contenido principal ================================= -->
+  <main id="contenido">
+    <h1>Carrito de compras</h1>
+    <p id="mensaje-compra" class="mensaje-compra" role="status" hidden></p>
 
+    <div class="contenido-carrito">
 
-    <nav class="acciones-usuario" aria-label="Cuenta y carrito"> <!-- Zona de navegación con ingreso y carrito -->
-      <a href="#" class="btn-ingresar">Ingresar →</a> <!-- Enlace de ingreso; por ahora no lleva a ningún lado -->
-      <a href="carrito.html" class="icono-carrito" aria-label="Ver carrito de compras" aria-current="page"> <!-- Enlace al carrito; aria-current avisa que es la página actual -->
-        <img src="/img/icono-carrito.png" alt="" width="30" height="30"> <!-- Ícono del carrito, decorativo (todavía no está creado) -->
-        <span id="contador-carrito" class="contador-carrito">3</span> <!-- Número de productos; JavaScript lo actualiza usando este id -->
-      </a> <!-- Cierra el enlace del carrito -->
-    </nav> <!-- Cierra la navegación -->
-  </header> <!-- Cierra el encabezado -->
+      <!-- Lista de productos: las filas reales las genera app.js desde localStorage
+           (cada li debería llevar data-id con el id del producto); las de abajo son
+           un ejemplo estático de la estructura, mientras esa función no exista -->
+      <section class="lista-carrito" aria-labelledby="titulo-lista">
+        <h2 id="titulo-lista">Productos seleccionados</h2>
 
+        <p id="carrito-vacio" class="carrito-vacio" hidden>
+          Tu carrito está vacío. <a href="../index.html">Seguir comprando</a>
+        </p>
 
-  <main id="contenido"> <!-- Contenido principal; el id es el destino del atajo de arriba -->
-    <h1>Carrito de compras</h1> <!-- Título principal de la página, único en todo el documento -->
-    <p id="mensaje-compra" class="mensaje-compra" role="status" hidden></p> <!-- Lugar para avisos; hidden lo oculta; role="status" hace que se lea al aparecer -->
+        <ul id="lista-carrito" class="lista-productos-carrito">
+          <li class="item-carrito" data-id="1">
+            <img class="item-imagen" src="../img/categoria-alimento.jpeg" alt="Nombre del producto" width="100" height="100">
+            <p class="item-nombre">Nombre del producto</p>
+            <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
+              <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
+              <span class="cantidad-valor" aria-live="polite">1</span>
+              <button type="button" class="btn-sumar" aria-label="Aumentar cantidad de Nombre del producto">+</button>
+            </div>
+            <p class="item-subtotal">Subtotal: <span class="valor-subtotal">$ 0,00</span></p>
+            <button type="button" class="btn-eliminar" aria-label="Eliminar Nombre del producto del carrito">
+              <span aria-hidden="true">X</span>
+            </button>
+          </li>
 
-
-    <div class="contenido-carrito"> <!-- Caja que pone lado a lado la lista y el resumen -->
-
-
-      <section class="lista-carrito" aria-labelledby="titulo-lista"> <!-- Sección de los productos; aria-labelledby la nombra con el título de abajo -->
-        <h2 id="titulo-lista">Productos seleccionados</h2> <!-- Subtítulo de la sección; su id lo usa aria-labelledby -->
-
-
-        <p id="carrito-vacio" class="carrito-vacio" hidden> <!-- Mensaje de carrito vacío, oculto hasta que haga falta -->
-          Tu carrito está vacío. <a href="../index.html">Seguir comprando</a> <!-- Texto con un enlace para volver a la tienda -->
-        </p> <!-- Cierra el mensaje -->
-
-
-        <!--
-          Las filas se generan dinámicamente desde app.js, leyendo el carrito
-          guardado en localStorage. Cada li lleva data-id con el id del producto
-          y su img lleva alt con el nombre real del producto. Las filas de
-          abajo son un ejemplo estático de la estructura.
-        -->
-        <ul id="lista-carrito" class="lista-productos-carrito"> <!-- Lista de productos; cada li es una fila -->
-          <li class="item-carrito" data-id="1"> <!-- Fila 1; data-id guarda el id del producto para JavaScript -->
-            <img class="item-imagen" src="/img/categoria-alimento.jpeg" alt="Nombre del producto" width="100" height="100"> <!-- Imagen del producto (provisoria); alt describe la imagen -->
-            <p class="item-nombre">Nombre del producto</p> <!-- Nombre del producto -->
-            <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto"> <!-- Agrupa los controles de cantidad y los nombra -->
-              <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button> <!-- Botón que resta 1; type="button" evita que envíe formularios -->
-              <span class="cantidad-valor" aria-live="polite">1</span> <!-- Cantidad actual; aria-live avisa a lectores de pantalla cuando cambia -->
-              <button type="button" class="btn-sumar" aria-label="Aumentar cantidad de Nombre del producto">+</button> <!-- Botón que suma 1 -->
-            </div> <!-- Cierra el grupo de cantidad -->
-            <p class="item-subtotal">Subtotal: <span class="valor-subtotal">$ 0,00</span></p> <!-- Precio por cantidad; el span permite cambiar solo el número -->
-            <button type="button" class="btn-eliminar" aria-label="Eliminar Nombre del producto del carrito"> <!-- Botón que quita el producto -->
-              <span aria-hidden="true">X</span> <!-- Símbolo visible; aria-hidden lo oculta a lectores porque el aria-label ya explica la acción -->
-            </button> <!-- Cierra el botón de eliminar -->
-          </li> <!-- Cierra la fila 1 -->
-
-
-          <!-- Fila 2: misma estructura que la fila 1 -->
           <li class="item-carrito" data-id="2">
-            <img class="item-imagen" src="/img/categoria-juguete.jpeg" alt="Nombre del producto" width="100" height="100">
+            <img class="item-imagen" src="../img/categoria-juguete.jpeg" alt="Nombre del producto" width="100" height="100">
             <p class="item-nombre">Nombre del producto</p>
             <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
               <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
@@ -92,10 +84,8 @@
             </button>
           </li>
 
-
-          <!-- Fila 3: misma estructura que la fila 1 -->
           <li class="item-carrito" data-id="3">
-            <img class="item-imagen" src="/img/categoria-accesorio.jpeg" alt="Nombre del producto" width="100" height="100">
+            <img class="item-imagen" src="../img/categoria-accesorio.jpeg" alt="Nombre del producto" width="100" height="100">
             <p class="item-nombre">Nombre del producto</p>
             <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
               <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
@@ -107,47 +97,43 @@
               <span aria-hidden="true">X</span>
             </button>
           </li>
-        </ul> <!-- Cierra la lista de productos -->
-      </section> <!-- Cierra la sección de productos -->
+        </ul>
+      </section>
 
+      <!-- Resumen de compra -->
+      <aside class="resumen-compra" aria-labelledby="titulo-resumen">
+        <h2 id="titulo-resumen">Resumen de compra</h2>
+        <p class="resumen-cantidad">Cantidad de productos: <span id="cantidad-total" aria-live="polite">3</span></p>
+        <p class="resumen-total">Total: <span id="total-compra" aria-live="polite">$ 0,00</span></p>
+        <button type="button" id="btn-finalizar" class="btn-finalizar">Finalizar compra</button>
+      </aside>
+    </div>
 
-      <aside class="resumen-compra" aria-labelledby="titulo-resumen"> <!-- Bloque lateral con el resumen; aria-labelledby lo nombra con su título -->
-        <h2 id="titulo-resumen">Resumen de compra</h2> <!-- Título del resumen -->
-        <p class="resumen-cantidad">Cantidad de productos: <span id="cantidad-total" aria-live="polite">3</span></p> <!-- Total de unidades; JavaScript cambia el span usando su id -->
-        <p class="resumen-total">Total: <span id="total-compra" aria-live="polite">$ 0,00</span></p> <!-- Suma de los subtotales; también lo cambia JavaScript -->
-        <button type="button" id="btn-finalizar" class="btn-finalizar">Finalizar compra</button> <!-- Botón de compra; JavaScript lo busca por su id -->
-      </aside> <!-- Cierra el resumen -->
-    </div> <!-- Cierra la caja que contiene lista y resumen -->
+    <!-- Diálogo de login: se abre al finalizar la compra si todavía no hay sesión guardada -->
+    <dialog id="dialogo-login" aria-labelledby="titulo-login">
+      <h2 id="titulo-login">Ingresá para finalizar tu compra</h2>
+      <form id="form-login" novalidate>
+        <label for="login-email">Correo electrónico</label>
+        <input type="email" id="login-email" name="email" required autocomplete="email">
 
+        <label for="login-clave">Contraseña</label>
+        <input type="password" id="login-clave" name="clave" required minlength="6" autocomplete="current-password">
 
-    <dialog id="dialogo-login" aria-labelledby="titulo-login"> <!-- Ventana emergente de ingreso; está cerrada hasta que JavaScript la abre -->
-      <h2 id="titulo-login">Ingresá para finalizar tu compra</h2> <!-- Título de la ventana; su id lo usa aria-labelledby -->
-      <form id="form-login" novalidate> <!-- Formulario de ingreso; novalidate desactiva los avisos automáticos del navegador para que los maneje JavaScript -->
-        <label for="login-email">Correo electrónico</label> <!-- Etiqueta del campo de correo -->
-        <input type="email" id="login-email" name="email" required autocomplete="email"> <!-- Campo de correo; required lo marca obligatorio; autocomplete sugiere el correo guardado -->
+        <p id="login-error" class="mensaje-error" role="alert" hidden></p>
 
+        <button type="submit" class="btn-finalizar">Ingresar y finalizar compra</button>
+        <button type="button" id="btn-cancelar-login" class="btn-secundario">Cancelar</button>
+      </form>
+    </dialog>
+  </main>
 
-        <label for="login-clave">Contraseña</label> <!-- Etiqueta del campo de contraseña -->
-        <input type="password" id="login-clave" name="clave" required minlength="6" autocomplete="current-password"> <!-- Campo de contraseña: oculta lo que se escribe; mínimo 6 caracteres -->
+  <!-- ============================ Footer ============================================= -->
+  <footer class="contactos">
+    <h2>Contacto</h2>
+    <p>info@riuucatshop.com</p>
+  </footer>
 
-
-        <p id="login-error" class="mensaje-error" role="alert" hidden></p> <!-- Lugar del mensaje de error; role="alert" hace que se lea apenas aparece -->
-
-
-        <button type="submit" class="btn-finalizar">Ingresar y finalizar compra</button> <!-- Botón que envía el formulario -->
-        <button type="button" id="btn-cancelar-login" class="btn-secundario">Cancelar</button> <!-- Botón que cierra la ventana sin comprar -->
-      </form> <!-- Cierra el formulario -->
-    </dialog> <!-- Cierra la ventana emergente -->
-  </main> <!-- Cierra el contenido principal -->
-
-
-  <footer class="contactos"> <!-- Pie de página, igual en todas las pantallas -->
-    <h2>Contacto</h2> <!-- Título del pie -->
-    <p>info@riuucatshop.com</p> <!-- Dato de contacto -->
-  </footer> <!-- Cierra el pie de página -->
-
-
-  <script src="../data/productos.js" defer></script> <!-- Carga los datos de productos; defer espera a que el HTML termine de cargar -->
-  <script src="../app.js" defer></script> <!-- Carga la lógica de la tienda, donde va el código de abajo -->
-</body> <!-- Cierra el cuerpo -->
-</html> <!-- Cierra el documento -->
+  <script src="../data/productos.js" defer></script>
+  <script src="../app.js" defer></script>
+</body>
+</html>

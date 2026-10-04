@@ -39,6 +39,7 @@
   top: 10px;
 }
 
+/* ===== Estilos base ===== */
 body {
   margin: 0;
   font-family: var(--fuente);
@@ -125,7 +126,7 @@ a { text-decoration: none; color: inherit; }
 /* ===== Categorías ===== */
 .categorias ul {
   list-style: none;
-  display: flex; 
+  display: flex;
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
@@ -143,21 +144,22 @@ a { text-decoration: none; color: inherit; }
   color: #333;
 }
 
+/* La imagen se recorta en círculo (border-radius 50% + object-fit: cover) */
 .categoria img {
   width: 220px;
   height: 220px;
-  border-radius: 50%;   /* 🔹 convierte la imagen en círculo */
-  object-fit: cover;    /* 🔹 recorta sin deformar */
+  border-radius: 50%;
+  object-fit: cover;
   display: block;
 }
 
 .categoria span {
-  font-size: 1rem;          /* 🔹 tamaño de letra más grande */
-  font-weight: 600;         /* 🔹 un poco más gruesa para destacar */
-  color: #333;              /* 🔹 tono oscuro para contraste */
-  margin-top: 8px;          /* 🔹 espacio entre la imagen y el texto */
-  letter-spacing: 0.5px;    /* 🔹 separación ligera entre letras */
-  font-family: 'Segoe UI', Arial, sans-serif; /* 🔹 tipografía limpia */
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .categoria:hover { transform: scale(1.05); }
@@ -167,7 +169,7 @@ a { text-decoration: none; color: inherit; }
   #menu-categorias { display: block !important; }
 }
 
-/* ===== Contenido principal ===== */
+/* ===== Contenido principal (catálogo e index.html) ===== */
 .contenido-principal {
   display: flex;
   gap: 20px;
@@ -175,31 +177,33 @@ a { text-decoration: none; color: inherit; }
   align-items: flex-start;
 }
 
+/* Carrusel de ofertas */
 .carrusel-ofertas { flex: 1; }
+  .carrusel-ofertas h2,
+  .publicidad h2 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
 
-.carrusel-ofertas h2,
-.publicidad h2 {
-  font-size: 1.1rem;
-  margin-bottom: 12px;
-}
-
+/* contenedor que aloja las tarjetas del carrusel */
 .carrusel-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
+/* contenedor de las tarjetas del carrusel */
 .contenedor-ofertas {
   flex: 1;
   display: flex;
   gap: 16px;
-  overflow-x: auto;
+  overflow-x: hidden;
+  max-width: calc(3 * 400px + 2 * 16px); /* 3 tarjetas + gaps */
   padding: 12px;
   background: #f7f7f7;
   border-radius: var(--radio);
   min-height: 220px;
 }
-
+/* Flechas del carrusel */
 .carrusel-flecha {
   border: none;
   background: var(--color-secundario);
@@ -211,40 +215,44 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   flex-shrink: 0;
 }
-
+/* Tarjeta de producto */
 .tarjeta-producto {
-  min-width: 160px;
+  flex: 0 0 calc(33.33% - 16px);
   background: #fff;
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
   padding: 10px;
   text-align: center;
 }
-
+/* Imagen de la tarjeta de producto */
 .tarjeta-producto img {
   width: 100%;
-  height: 110px;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   border-radius: 6px;
 }
-
+/* Título de la tarjeta de producto */
 .tarjeta-producto h3 {
   font-size: 0.9rem;
   margin: 8px 0 4px;
 }
-
+/* Precio de la tarjeta de producto */
 .tarjeta-producto .precio {
   font-weight: bold;
   margin: 0;
 }
-
+/* ===================== Contenedor de publicidad ========================= */
 .publicidad {
   width: 220px;
-  background: var(--color-secundario);
-  color: #fff;
+  height: 320px; /* alto fijo: necesario para que la imagen (height:100%) lo rellene */
   border-radius: var(--radio);
-  padding: 16px;
-  min-height: 220px;
+  overflow: hidden; /* recorta la imagen a las esquinas redondeadas, sin marco */
+}
+.publicidad img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* la imagen rellena todo el espacio, sin dejar ver fondo gris */
+  display: block;
 }
 
 
@@ -256,12 +264,10 @@ a { text-decoration: none; color: inherit; }
   align-items: flex-start;
 }
 
-.lista-carrito {
-  flex: 2; /* ocupa más espacio */
-}
+.lista-carrito { flex: 2; } /* ocupa más espacio que el resumen */
 
 .resumen-compra {
-  flex: 1; /* ocupa menos espacio */
+  flex: 1;
   border: 1px solid #ccc;
   padding: 16px;
   border-radius: 8px;
@@ -282,9 +288,7 @@ a { text-decoration: none; color: inherit; }
   object-fit: cover;
 }
 
-.item-nombre {
-  font-weight: 600;
-}
+.item-nombre { font-weight: 600; }
 
 .item-cantidad {
   display: flex;
@@ -322,11 +326,7 @@ a { text-decoration: none; color: inherit; }
   background: var(--color-principal);
 }
 
-
-
-
-/* ======================================================================= */
-/* ====== Detalle de producto ====== */
+/* ===== Detalle de producto ===== */
 .detalle-producto {
   display: flex;
   flex-wrap: wrap;
@@ -388,19 +388,15 @@ a { text-decoration: none; color: inherit; }
   background: var(--color-principal, #005fa3);
 }
 
-.producto-descripcion {
-  margin-top: 20px;
-}
+.producto-descripcion { margin-top: 20px; }
 
 .producto-descripcion h3 {
   margin-bottom: 8px;
   font-size: 1.2rem;
 }
 
-/* ====== Productos relacionados ====== */
-.productos-relacionados {
-  margin-top: 40px;
-}
+/* ===== Productos relacionados ===== */
+.productos-relacionados { margin-top: 40px; }
 
 .relacionados-grid {
   display: grid;
@@ -426,11 +422,6 @@ a { text-decoration: none; color: inherit; }
   transform: translateY(-4px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
-
-
-
-
 
 /* ===== Footer ===== */
 .contactos {
