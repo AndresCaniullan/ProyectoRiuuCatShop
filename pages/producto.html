@@ -46,27 +46,10 @@
          según el id recibido por query string (producto.html?id=N) -->
     <section class="detalle-producto" id="detalle-producto"></section>
 
-    <!-- Productos relacionados -->
-    <section class="productos-relacionados" aria-labelledby="titulo-relacionados">
+       <!-- Productos relacionados: los arma renderizarRelacionados() en app.js (misma categoría) -->
+    <section id="productos-relacionados" class="productos-relacionados" aria-labelledby="titulo-relacionados" hidden>
       <h2 id="titulo-relacionados">Productos relacionados</h2>
-      <div class="relacionados-grid">
-        <div class="relacionado">
-          <img src="../img/categoria-alimento.jpeg" alt="Producto relacionado 1" width="150" height="150">
-          <p>Producto relacionado 1</p>
-        </div>
-        <div class="relacionado">
-          <img src="../img/categoria-juguete.jpeg" alt="Producto relacionado 2" width="150" height="150">
-          <p>Producto relacionado 2</p>
-        </div>
-        <div class="relacionado">
-          <img src="../img/categoria-accesorio.jpeg" alt="Producto relacionado 3" width="150" height="150">
-          <p>Producto relacionado 3</p>
-        </div>
-        <div class="relacionado">
-          <img src="../img/categoria-vestimenta.jpeg" alt="Producto relacionado 4" width="150" height="150">
-          <p>Producto relacionado 4</p>
-        </div>
-      </div>
+      <div id="relacionados-grid" class="relacionados-grid"></div>
     </section>
   </main>
 
