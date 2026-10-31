@@ -3,14 +3,28 @@
 // revisa primero si los elementos que necesita existen en la página actual
 // (index, producto o carrito); si no los encuentra, no hace nada. Por eso
 // este mismo app.js puede incluirse igual en las tres páginas.
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   renderizarOfertas();
+//   actualizarContadorCarrito();
+//   activarFinalizarCompra();
+//   renderizarDetalleProducto();
+//   renderizarPublicidad();
+// });
 document.addEventListener("DOMContentLoaded", () => {
+  activarBuscador();
+  activarCategorias();
+  activarMenuMovil();
   renderizarOfertas();
+  renderizarCatalogo();   //  nueva
+  activarFlechasCarrusel();
+  activarRotacionAutomatica();
   actualizarContadorCarrito();
   activarFinalizarCompra();
   renderizarDetalleProducto();
+  renderizarRelacionados(producto);   //  nueva
   renderizarPublicidad();
 });
-
 // ============================ Carrito ============================
 
 // Suma las cantidades del carrito guardado en localStorage y actualiza el
@@ -301,86 +315,451 @@ function eliminarDelCarrito(idProducto) { // recibe el id del producto a sacar
   renderizarCarrito(); // vuelve a dibujar la lista y los totales
 } // fin de eliminarDelCarrito
 
+
 // ============================ Carrusel ============================
-function activarFlechasCarrusel(contenedor) {
+// Se activan UNA sola vez al cargar la página (ver el DOMContentLoaded de arriba).
+// El ancho de las tarjetas se mide en cada clic, porque el contenido cambia al filtrar.
+
+// Cuánto hay que desplazar el carrusel: el ancho de 3 tarjetas (+ el espacio entre ellas).
+function calcularDesplazamiento(contenedor) {
   const tarjeta = contenedor.querySelector(".tarjeta-producto");
-  if (!tarjeta) return;
+  if (!tarjeta) return 0;
+  return (tarjeta.offsetWidth + 16) * 3; // 16 = gap del CSS
+}
 
-  const anchoTarjeta = tarjeta.offsetWidth + 16; // incluye gap
-  const desplazamiento = anchoTarjeta * 3; // mueve 3 productos
+function activarFlechasCarrusel() {
+  const contenedor = document.querySelector("#contenedor-ofertas");
+  const botonAnterior = document.querySelector(".carrusel-anterior");
+  const botonSiguiente = document.querySelector(".carrusel-siguiente");
+  if (!contenedor || !botonAnterior || !botonSiguiente) return;
 
-  document.querySelector(".carrusel-anterior").addEventListener("click", () => {
-    contenedor.scrollLeft -= desplazamiento;
+  botonAnterior.addEventListener("click", () => {
+    contenedor.scrollLeft -= calcularDesplazamiento(contenedor);
   });
-
-  document.querySelector(".carrusel-siguiente").addEventListener("click", () => {
-    contenedor.scrollLeft += desplazamiento;
+  botonSiguiente.addEventListener("click", () => {
+    contenedor.scrollLeft += calcularDesplazamiento(contenedor);
   });
 }
-function activarRotacionAutomatica(contenedor) {
-  const tarjeta = contenedor.querySelector(".tarjeta-producto");
-  if (!tarjeta) return;
 
-  const anchoTarjeta = tarjeta.offsetWidth + 16; // incluye gap
-  const desplazamiento = anchoTarjeta * 3; // mueve 3 productos por vez
+function activarRotacionAutomatica() {
+  const contenedor = document.querySelector("#contenedor-ofertas");
+  if (!contenedor) return;
 
   setInterval(() => {
     // Si llegó al final, vuelve al inicio
     if (contenedor.scrollLeft + contenedor.clientWidth >= contenedor.scrollWidth) {
       contenedor.scrollLeft = 0;
     } else {
-      contenedor.scrollLeft += desplazamiento;
+      contenedor.scrollLeft += calcularDesplazamiento(contenedor);
     }
   }, 4000); // cada 4 segundos
 }
 
 
-// ============================ Catálogo (ofertas destacadas) ============================
 
-// Pinta las tarjetas de producto dentro de #contenedor-ofertas (index.html),
-// mostrando solo los productos en oferta y, si se pasa categoria, filtrando además por esa categoría.
-function renderizarOfertas(categoria = null) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================ Catálogo (ofertas, filtros y búsqueda) ============================
+
+// // Estado actual de los filtros. renderizarOfertas() lee este objeto cada vez que se dibuja.
+// const filtros = { categoria: null, texto: "" };
+
+// // Nombre "lindo" de cada categoría, para usarlo como título del catálogo.
+// const NOMBRES_CATEGORIA = {
+//   alimento: "Alimento",
+//   sanitario: "Sanitario",
+//   juguetes: "Juguetes",
+//   accesorios: "Accesorios",
+//   vestimenta: "Vestimenta"
+// };
+
+// // Pasa a minúsculas y quita tildes, así "camisa" encuentra "Camisá" y "BUZO" encuentra "buzo".
+// function normalizarTexto(texto) {
+//   return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+// }
+
+// // Devuelve los productos que corresponde mostrar según los filtros activos.
+// // - Sin filtros: solo los productos en oferta (el carrusel de la portada).
+// // - Con categoría y/o texto: todos los productos del catálogo que coincidan.
+// function obtenerProductosAMostrar() {
+//   const texto = normalizarTexto(filtros.texto);
+//   const hayFiltros = filtros.categoria !== null || texto !== "";
+
+//   return productos.filter((producto) => {
+//     if (producto.categoria === "publicidad") return false; // la publicidad nunca es un producto a la venta
+//     if (!hayFiltros) return producto.oferta;
+//     const coincideCategoria = filtros.categoria === null || producto.categoria === filtros.categoria;
+//     const coincideTexto = texto === "" || normalizarTexto(producto.nombre).includes(texto);
+//     return coincideCategoria && coincideTexto;
+//   });
+// }
+
+// // Texto del título (<h2>) según lo que se esté mostrando.
+// function obtenerTituloCatalogo() {
+//   const texto = filtros.texto.trim();
+//   if (texto && filtros.categoria) {
+//     return `Resultados para "${texto}" en ${NOMBRES_CATEGORIA[filtros.categoria]}`;
+//   }
+//   if (texto) return `Resultados para "${texto}"`;
+//   if (filtros.categoria) return NOMBRES_CATEGORIA[filtros.categoria];
+//   return "Ofertas destacadas";
+// }
+
+// // Pinta las tarjetas de producto dentro de #contenedor-ofertas (index.html),
+// // según los filtros activos (ver obtenerProductosAMostrar).
+// function renderizarOfertas() {
+//   const contenedor = document.querySelector("#contenedor-ofertas");
+//   if (!contenedor) return;
+//   if (typeof productos === "undefined" || !Array.isArray(productos)) return;
+
+//   document.querySelector("#titulo-catalogo").textContent = obtenerTituloCatalogo();
+
+//   const lista = obtenerProductosAMostrar();
+//   contenedor.replaceChildren();
+//   contenedor.scrollLeft = 0; // vuelve al principio del carrusel
+
+//   if (lista.length === 0) {
+//     const vacio = document.createElement("p");
+//     vacio.textContent = "No se encontraron productos.";
+//     contenedor.append(vacio);
+//     return;
+//   }
+
+//   lista.forEach((producto) => {
+//     const tarjeta = document.createElement("a");
+//     tarjeta.className = "tarjeta-producto";
+//     tarjeta.href = `pages/producto.html?id=${producto.id}`;
+
+//     const imagen = document.createElement("img");
+//     imagen.src = producto.imagen;
+//     imagen.alt = producto.nombre;
+
+//     const nombre = document.createElement("h3");
+//     nombre.textContent = producto.nombre;
+
+//     // El precio que se muestra es el mismo que se cobra en el carrito (precioFinal si hay descuento).
+//     const precio = document.createElement("p");
+//     precio.className = "precio";
+//     if (producto.precioFinal !== undefined) {
+//       const precioOriginal = document.createElement("del"); // <del>: precio anterior tachado
+//       precioOriginal.textContent = formatearPrecio(producto.precio);
+//       const etiqueta = document.createElement("span");
+//       etiqueta.className = "etiqueta-descuento";
+//       etiqueta.textContent = `-${producto.descuento}%`;
+//       precio.append(precioOriginal, ` ${formatearPrecio(precioDeProducto(producto))} `, etiqueta);
+//     } else {
+//       precio.textContent = formatearPrecio(precioDeProducto(producto));
+//     }
+
+//     tarjeta.append(imagen, nombre, precio);
+//     contenedor.append(tarjeta);
+//   });
+// }
+
+// ============================ Catálogo (ofertas y resultados) ============================
+
+// Estado actual de los filtros. renderizarCatalogo() lee este objeto cada vez que se dibuja.
+const filtros = { categoria: null, texto: "" };
+
+// Nombre "lindo" de cada categoría, para usarlo como título de los resultados.
+const NOMBRES_CATEGORIA = {
+  alimento: "Alimento",
+  sanitario: "Sanitario",
+  juguetes: "Juguetes",
+  accesorios: "Accesorios",
+  vestimenta: "Vestimenta"
+};
+
+// Pasa a minúsculas y quita tildes, así "camisa" encuentra "Camisá" y "BUZO" encuentra "buzo".
+function normalizarTexto(texto) {
+  return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+// Crea la tarjeta <a> de un producto. La usan el carrusel de ofertas y la lista de resultados.
+function crearTarjetaProducto(producto) {
+  const tarjeta = document.createElement("a");
+  tarjeta.className = "tarjeta-producto";
+  tarjeta.href = `pages/producto.html?id=${producto.id}`;
+
+  const imagen = document.createElement("img");
+  imagen.src = producto.imagen;
+  imagen.alt = producto.nombre;
+
+  const nombre = document.createElement("h3");
+  nombre.textContent = producto.nombre;
+
+  // El precio que se muestra es el mismo que se cobra en el carrito (precioFinal si hay descuento).
+  const precio = document.createElement("p");
+  precio.className = "precio";
+  if (producto.precioFinal !== undefined) {
+    const precioOriginal = document.createElement("del"); // <del>: precio anterior tachado
+    precioOriginal.textContent = formatearPrecio(producto.precio);
+    const etiqueta = document.createElement("span");
+    etiqueta.className = "etiqueta-descuento";
+    etiqueta.textContent = `-${producto.descuento}%`;
+    precio.append(precioOriginal, ` ${formatearPrecio(precioDeProducto(producto))} `, etiqueta);
+  } else {
+    precio.textContent = formatearPrecio(precioDeProducto(producto));
+  }
+
+  tarjeta.append(imagen, nombre, precio);
+  return tarjeta;
+}
+
+// Pinta el carrusel de #contenedor-ofertas (index.html): siempre muestra solo los productos en oferta.
+function renderizarOfertas() {
   const contenedor = document.querySelector("#contenedor-ofertas");
   if (!contenedor) return;
   if (typeof productos === "undefined" || !Array.isArray(productos)) return;
 
-  let lista = productos.filter((producto) => producto.oferta);
-  if (categoria) {
-    lista = lista.filter((producto) => producto.categoria === categoria);
-  }
-
+  const ofertas = productos.filter((producto) => producto.oferta);
   contenedor.replaceChildren();
 
-  if (lista.length === 0) {
+  if (ofertas.length === 0) {
     const vacio = document.createElement("p");
     vacio.textContent = "No hay productos en oferta.";
     contenedor.append(vacio);
     return;
   }
 
-  lista.forEach((producto) => {
-    const tarjeta = document.createElement("a");
-    tarjeta.className = "tarjeta-producto";
-    tarjeta.href = `pages/producto.html?id=${producto.id}`;
+  ofertas.forEach((producto) => contenedor.append(crearTarjetaProducto(producto)));
+}
 
-    const imagen = document.createElement("img");
-    imagen.src = producto.imagen;
-    imagen.alt = producto.nombre;
+// Devuelve los productos que coinciden con la categoría y/o el texto buscado.
+function obtenerProductosFiltrados() {
+  const texto = normalizarTexto(filtros.texto);
 
-    const nombre = document.createElement("h3");
-    nombre.textContent = producto.nombre;
+  return productos.filter((producto) => {
+    if (producto.categoria === "publicidad") return false; // la publicidad nunca es un producto a la venta
+    const coincideCategoria = filtros.categoria === null || producto.categoria === filtros.categoria;
+    const coincideTexto = texto === "" || normalizarTexto(producto.nombre).includes(texto);
+    return coincideCategoria && coincideTexto;
+  });
+}
 
-    const precio = document.createElement("p");
-    precio.className = "precio";
-    precio.textContent = `$ ${Number(producto.precio).toLocaleString("es-AR")}`;
+// Título de la sección de resultados según los filtros activos.
+function obtenerTituloCatalogo() {
+  const texto = filtros.texto.trim();
+  if (texto && filtros.categoria) {
+    return `Resultados para "${texto}" en ${NOMBRES_CATEGORIA[filtros.categoria]}`;
+  }
+  if (texto) return `Resultados para "${texto}"`;
+  return NOMBRES_CATEGORIA[filtros.categoria];
+}
 
-    tarjeta.append(imagen, nombre, precio);
-    contenedor.append(tarjeta);
+// Dibuja la lista de resultados debajo del carrusel. Si no hay ningún filtro activo, oculta la sección.
+function renderizarCatalogo() {
+  const seccion = document.querySelector("#seccion-catalogo");
+  const lista = document.querySelector("#lista-catalogo");
+  if (!seccion || !lista) return;
+  if (typeof productos === "undefined" || !Array.isArray(productos)) return;
+
+  const hayFiltros = filtros.categoria !== null || normalizarTexto(filtros.texto) !== "";
+  seccion.hidden = !hayFiltros; // hidden = true oculta la sección
+  if (!hayFiltros) return;
+
+  document.querySelector("#titulo-catalogo").textContent = obtenerTituloCatalogo();
+  lista.replaceChildren();
+
+  const resultados = obtenerProductosFiltrados();
+  if (resultados.length === 0) {
+    const vacio = document.createElement("li");
+    vacio.textContent = "No se encontraron productos.";
+    lista.append(vacio);
+    return;
+  }
+
+  resultados.forEach((producto) => {
+    const item = document.createElement("li");
+    item.append(crearTarjetaProducto(producto));
+    lista.append(item);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================ Filtros, buscador y menú móvil (Andrés) ============================
+
+// Buscador del header. Funciona en las 3 páginas:
+// - En index.html filtra el catálogo mientras se escribe (input) y al enviar (submit).
+// - En producto.html y carrito.html no hay catálogo, así que manda a index.html?buscar=texto.
+// function activarBuscador() {
+//   const formulario = document.querySelector(".buscador");
+//   const campo = document.querySelector("#buscador");
+//   if (!formulario || !campo) return;
+//   const estamosEnIndex = document.querySelector("#contenedor-ofertas") !== null;
+
+//   // Si venimos de otra página con ?buscar=..., arrancamos ya filtrado.
+//   if (estamosEnIndex) {
+//     const buscado = new URLSearchParams(window.location.search).get("buscar");
+//     if (buscado) {
+//       campo.value = buscado;
+//       filtros.texto = buscado;
+//     }
+//   }
+
+//   formulario.addEventListener("submit", (evento) => {
+//     evento.preventDefault(); // evita que la página se recargue
+//     if (!estamosEnIndex) {
+//       window.location.href = `../index.html?buscar=${encodeURIComponent(campo.value.trim())}`;
+//       return;
+//     }
+//     filtros.texto = campo.value;
+//     renderizarOfertas();
+//   });
+
+//   if (estamosEnIndex) {
+//     campo.addEventListener("input", () => {
+//       filtros.texto = campo.value;
+//       renderizarOfertas();
+//     });
+//   }
+// }
+
+function activarBuscador() {
+  const formulario = document.querySelector(".buscador");
+  const campo = document.querySelector("#buscador");
+  if (!formulario || !campo) return;
+
+  const estamosEnIndex = document.querySelector("#contenedor-ofertas") !== null;
+
+  // Si venimos de otra página con ?buscar=..., arrancamos ya filtrado.
+  if (estamosEnIndex) {
+    const buscado = new URLSearchParams(window.location.search).get("buscar");
+    if (buscado) {
+      campo.value = buscado;
+      filtros.texto = buscado;
+    }
+  }
+
+  formulario.addEventListener("submit", (evento) => {
+    evento.preventDefault(); // evita que la página se recargue
+    if (!estamosEnIndex) {
+      window.location.href = `../index.html?buscar=${encodeURIComponent(campo.value.trim())}`;
+      return;
+    }
+    filtros.texto = campo.value;
+    renderizarCatalogo();
+    document.querySelector("#seccion-catalogo").scrollIntoView({ behavior: "smooth" });
   });
 
-  activarFlechasCarrusel(contenedor);
-  activarRotacionAutomatica(contenedor);
+  if (estamosEnIndex) {
+    campo.addEventListener("input", () => {
+      filtros.texto = campo.value;
+      renderizarCatalogo();
+    });
+  }
 }
+
+
+
+
+
+
+
+// Marca visualmente la categoría elegida (y desmarca las demás).
+function marcarCategoriaActiva() {
+  document.querySelectorAll(".categoria[data-categoria]").forEach((enlace) => {
+    const esLaActiva = enlace.dataset.categoria === filtros.categoria;
+    enlace.classList.toggle("activa", esLaActiva);
+    if (esLaActiva) {
+      enlace.setAttribute("aria-current", "true");
+    } else {
+      enlace.removeAttribute("aria-current");
+    }
+  });
+}
+
+// Clic en una categoría: filtra el catálogo. Un segundo clic en la misma categoría quita el filtro.
+
+// function activarCategorias() {
+//   const enlaces = document.querySelectorAll(".categoria[data-categoria]");
+//   if (enlaces.length === 0) return; // producto.html y carrito.html no tienen categorías
+
+//   enlaces.forEach((enlace) => {
+//     enlace.addEventListener("click", (evento) => {
+//       evento.preventDefault(); // el href="#" no debe saltar al inicio de la página
+//       const elegida = enlace.dataset.categoria;
+//       filtros.categoria = filtros.categoria === elegida ? null : elegida;
+//       marcarCategoriaActiva();
+//       renderizarOfertas();
+//       cerrarMenuMovil();
+//       document.querySelector(".carrusel-ofertas").scrollIntoView({ behavior: "smooth" });
+//     });
+//   });
+// }
+function activarCategorias() {
+  const enlaces = document.querySelectorAll(".categoria[data-categoria]");
+  if (enlaces.length === 0) return; // producto.html y carrito.html no tienen categorías
+
+  enlaces.forEach((enlace) => {
+    enlace.addEventListener("click", (evento) => {
+      evento.preventDefault(); // el href="#" no debe saltar al inicio de la página
+      const elegida = enlace.dataset.categoria;
+      filtros.categoria = filtros.categoria === elegida ? null : elegida;
+      marcarCategoriaActiva();
+      renderizarCatalogo();
+      cerrarMenuMovil();
+      // Si quedó el filtro puesto, baja hasta los resultados
+      if (filtros.categoria !== null) {
+        document.querySelector("#seccion-catalogo").scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+}
+
+
+
+
+
+// Botón "Menú" (solo se ve en pantallas chicas): agrega/quita la clase .mostrar que ya existe en el CSS.
+function activarMenuMovil() {
+  const boton = document.querySelector(".boton-menu");
+  const menu = document.querySelector("#menu-categorias");
+  if (!boton || !menu) return;
+
+  boton.addEventListener("click", () => {
+    const abierto = menu.classList.toggle("mostrar"); // devuelve true si quedó la clase puesta
+    boton.setAttribute("aria-expanded", abierto);
+  });
+}
+
+// Cierra el menú del celular (se usa después de elegir una categoría).
+function cerrarMenuMovil() {
+  const boton = document.querySelector(".boton-menu");
+  const menu = document.querySelector("#menu-categorias");
+  if (!boton || !menu) return;
+  menu.classList.remove("mostrar");
+  boton.setAttribute("aria-expanded", "false");
+}
+
 
 // ============================ Publicidad ============================
 
@@ -391,8 +770,7 @@ function renderizarPublicidad() {
   if (!contenedor) return;
   if (typeof productos === "undefined" || !Array.isArray(productos)) return;
 
-  let lista = productos.filter((producto) => producto.categoria === "publicidad");
-
+  const lista = productos.filter((producto) => producto.categoria === "publicidad");
   contenedor.replaceChildren();
 
   if (lista.length === 0) {
@@ -410,7 +788,18 @@ function renderizarPublicidad() {
     imagen.src = producto.imagen;
     imagen.alt = producto.nombre;
 
-    tarjeta.append(imagen);
+    // Si la publicidad tiene "enlace" en productos.js, la imagen es un link que abre en una pestaña nueva.
+    if (producto.enlace) {
+      const enlace = document.createElement("a");
+      enlace.href = producto.enlace;
+      enlace.target = "_blank";
+      enlace.rel = "noopener noreferrer";
+      enlace.setAttribute("aria-label", `${producto.nombre} (se abre en una pestaña nueva)`);
+      enlace.append(imagen);
+      tarjeta.append(enlace);
+    } else {
+      tarjeta.append(imagen);
+    }
     contenedor.append(tarjeta);
   });
 }
@@ -433,13 +822,54 @@ function renderizarDetalleProducto() {
     return;
   }
 
+// ============================ Productos relacionados (Andrés) ============================
+
+// Muestra hasta 4 productos de la misma categoría que el producto abierto (sin contar el mismo).
+// Si no hay ninguno, la sección queda oculta.
+function renderizarRelacionados(producto) {
+  const seccion = document.querySelector("#productos-relacionados");
+  const grilla = document.querySelector("#relacionados-grid");
+  if (!seccion || !grilla) return;
+
+  const relacionados = productos
+    .filter((otro) => otro.categoria === producto.categoria && otro.id !== producto.id)
+    .slice(0, 4);
+
+  seccion.hidden = relacionados.length === 0;
+  grilla.replaceChildren();
+
+  relacionados.forEach((otro) => {
+    const enlace = document.createElement("a");
+    enlace.className = "relacionado";
+    enlace.href = `producto.html?id=${otro.id}`; // producto.html está en la misma carpeta (pages/)
+
+    const imagen = document.createElement("img");
+    imagen.src = `.${otro.imagen}`; // "./img/..." pasa a "../img/..."
+    imagen.alt = otro.nombre;
+    imagen.width = 150;
+    imagen.height = 150;
+
+    const nombre = document.createElement("p");
+    nombre.textContent = otro.nombre;
+
+    const precio = document.createElement("p");
+    precio.className = "relacionado-precio";
+    precio.textContent = formatearPrecio(precioDeProducto(otro));
+
+    enlace.append(imagen, nombre, precio);
+    grilla.append(enlace);
+  });
+}
+
+
   contenedor.innerHTML = `
     <div class="producto-imagen">
       <img src=".${producto.imagen}" alt="${producto.nombre}" width="300" height="300">
     </div>
     <div class="producto-info">
       <h2>${producto.nombre}</h2>
-      <p class="producto-precio">$ ${Number(producto.precio).toLocaleString("es-AR")}</p>
+        <p class="producto-precio">${producto.precioFinal !== undefined ? `<del>${formatearPrecio(producto.precio)}</del> ` : ""}${formatearPrecio(precioDeProducto(producto))}</p>
+      
       <div class="producto-cantidad">
         <button type="button" class="btn-restar">-</button>
         <span class="cantidad-valor">1</span>

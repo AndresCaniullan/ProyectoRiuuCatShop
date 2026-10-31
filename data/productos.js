@@ -26,7 +26,7 @@ const productos = [
   nombre: "Piedras Sanitarias 25kg",
   precio: 50000,
   oferta: true, //  está en oferta
-  categoria: "higiene",
+  categoria: "sanitario",
   peso: "25 kg",
   imagen: "./img/oferta-sanitario-piedritasSanitarias-3.jpeg", // ajustá al nombre real del archivo en tu carpeta img
   descripcion: "Bolsa de 25 kg de piedras sanitarias para gatos. Envíos sin cargo en compras superiores a $30.000."
@@ -61,7 +61,52 @@ const productos = [
   descripcion: "Campaña publicitaria de la emisora Allen FM 90.8. Suscríbete y escucha en vivo en www.salganalsol.com.ar.",
   oferta: false, //  no es una oferta de catálogo
   destacado: true // aparece en el bloque de publicidad
+},
+{
+  id: 7,
+  nombre: "Caña de pescar con plumas",
+  precio: 4200,
+  oferta: false,
+  categoria: "juguetes",
+  imagen: "./img/juguete-cana-pescar-7.jpg",
+  descripcion: "Caña con plumas y cascabel para jugar con tu gato. Estimula el instinto de caza y ayuda a que haga ejercicio."
+},
+{
+  id: 8,
+  nombre: "Pelotas con cascabel",
+  precio: 2800,
+  oferta: false,
+  categoria: "juguetes",
+  imagen: "./img/juguete-pelotas-cascabel-8.jpg",
+  descripcion: "Set de 6 pelotas livianas de colores con cascabel en su interior."
+},
+{
+  id: 9,
+  nombre: "Buzo de algodón para gatos",
+  precio: 9500,
+  oferta: false,
+  categoria: "vestimenta",
+  imagen: "./img/vestimenta-buzo-9.jpg",
+  descripcion: "Buzo suave de algodón, ideal para los días fríos. Disponible en talles S, M y L."
+},
+{
+  id: 10,
+  nombre: "Bandana ajustable",
+  precio: 3100,
+  oferta: false,
+  categoria: "vestimenta",
+  imagen: "./img/vestimenta-bandana-10.jpg",
+  descripcion: "Bandana de tela liviana con cierre ajustable, apta para todos los tamaños."
+},
+{
+  id: 11,
+  nombre: "La Anónima - Accesorios para mascotas",
+  categoria: "publicidad",
+  tipo: "accesorios",
+  imagen: "./img/publicidad-laanonima-11.jpg",
+  enlace: "https://www.laanonima.com.ar/accesorios/n3_323/", // al hacer clic en la imagen abre esta página
+  descripcion: "Publicidad de accesorios de La Anónima.",
+  oferta: false,
+  destacado: true
 }
-
-
 ];
