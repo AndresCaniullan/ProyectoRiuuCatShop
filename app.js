@@ -122,6 +122,185 @@ function activarFinalizarCompra() {
   botonCancelar.addEventListener("click", cerrarDialogo);
 }
 
+// ============================ Carrito: agregar, mostrar y modificar (Daniela) ============================
+// En localStorage, con la clave "carrito", se guarda un arreglo con solo el id y la cantidad
+// de cada producto, por ejemplo: [ { id: 1, cantidad: 2 }, { id: 4, cantidad: 1 } ].
+// El nombre, el precio y la imagen se buscan siempre en el arreglo productos (data/productos.js).
+
+// Esta sección tiene su propio DOMContentLoaded para no modificar el bloque de inicialización de arriba.
+document.addEventListener("DOMContentLoaded", () => { // espera a que el HTML de la página esté cargado
+  activarAgregarAlCarrito(); // activa +, − y "Agregar al carrito" (solo actúa en producto.html)
+  renderizarCarrito(); // dibuja la lista del carrito (solo actúa en carrito.html)
+}); // fin del DOMContentLoaded de esta sección
+
+// Lee el carrito guardado en localStorage y lo devuelve como arreglo.
+function leerCarrito() { // función sin parámetros que devuelve el carrito
+  try { // intenta leer; si el dato guardado está roto, salta al catch
+    const carrito = JSON.parse(localStorage.getItem("carrito")); // convierte el texto guardado en arreglo
+    return Array.isArray(carrito) ? carrito : []; // si es un arreglo lo devuelve, si no (ej. null) devuelve uno vacío
+  } catch { // si JSON.parse falló
+    return []; // devuelve un carrito vacío para que la página no se rompa
+  } // fin del try/catch
+} // fin de leerCarrito
+
+// Guarda el carrito en localStorage y actualiza el número del ícono del header.
+function guardarCarrito(carrito) { // recibe el arreglo del carrito
+  localStorage.setItem("carrito", JSON.stringify(carrito)); // lo convierte a texto y lo guarda con la clave "carrito"
+  actualizarContadorCarrito(); // reusa la función que ya existía para refrescar el contador
+} // fin de guardarCarrito
+
+// Devuelve el precio que se cobra: si el producto tiene precioFinal (con descuento) usa ese, si no usa precio.
+function precioDeProducto(producto) { // recibe un objeto producto
+  return producto.precioFinal ?? producto.precio; // ?? elige el de la derecha solo si precioFinal no existe
+} // fin de precioDeProducto
+
+// Convierte un número en texto con formato de precio argentino, ej. 18500 → "$ 18.500".
+function formatearPrecio(valor) { // recibe un número
+  return `$ ${Number(valor).toLocaleString("es-AR")}`; // mismo formato que usan las tarjetas de ofertas
+} // fin de formatearPrecio
+
+// ---------- Página de detalle (producto.html) ----------
+
+// Activa los botones +, − y "Agregar al carrito" que arma renderizarDetalleProducto().
+function activarAgregarAlCarrito() { // función sin parámetros
+  const contenedor = document.getElementById("detalle-producto"); // busca la sección del detalle
+  if (!contenedor) return; // si no existe, no estamos en producto.html: no hace nada
+  const botonAgregar = contenedor.querySelector(".btn-agregar"); // botón "Agregar al carrito"
+  if (!botonAgregar) return; // si no está, es porque el producto no se encontró: no hace nada
+  const botonSumar = contenedor.querySelector(".btn-sumar"); // botón +
+  const botonRestar = contenedor.querySelector(".btn-restar"); // botón −
+  const valorCantidad = contenedor.querySelector(".cantidad-valor"); // el número que se ve entre + y −
+  const idProducto = parseInt(new URLSearchParams(window.location.search).get("id")); // id que viene en la URL (?id=N), pasado a número
+  let cantidad = 1; // cantidad elegida; arranca en 1
+
+  botonSumar.addEventListener("click", () => { // cuando se hace clic en +
+    cantidad++; // suma 1
+    valorCantidad.textContent = cantidad; // muestra el nuevo número
+  }); // fin del evento de +
+
+  botonRestar.addEventListener("click", () => { // cuando se hace clic en −
+    if (cantidad > 1) { // solo resta si queda al menos 1 (no permite 0 ni negativos)
+      cantidad--; // resta 1
+      valorCantidad.textContent = cantidad; // muestra el nuevo número
+    } // fin del if
+  }); // fin del evento de −
+
+  botonAgregar.addEventListener("click", () => { // cuando se hace clic en "Agregar al carrito"
+    const carrito = leerCarrito(); // trae el carrito guardado
+    const existente = carrito.find((item) => item.id === idProducto); // busca si este producto ya estaba
+    if (existente) { // si ya estaba en el carrito
+      existente.cantidad += cantidad; // le suma la cantidad elegida
+    } else { // si no estaba
+      carrito.push({ id: idProducto, cantidad: cantidad }); // lo agrega con su id y cantidad
+    } // fin del if/else
+    guardarCarrito(carrito); // guarda el carrito y actualiza el contador del header
+  }); // fin del evento de "Agregar al carrito"
+} // fin de activarAgregarAlCarrito
+
+// ---------- Página del carrito (carrito.html) ----------
+
+// Dibuja la lista del carrito, el resumen y el mensaje de carrito vacío.
+function renderizarCarrito() { // función sin parámetros
+  const lista = document.querySelector("#lista-carrito"); // el <ul> donde van las filas
+  if (!lista) return; // si no existe, no estamos en carrito.html: no hace nada
+  const mensajeVacio = document.querySelector("#carrito-vacio"); // párrafo "Tu carrito está vacío"
+  const cantidadTotal = document.querySelector("#cantidad-total"); // número de "Cantidad de productos"
+  const totalCompra = document.querySelector("#total-compra"); // número de "Total"
+
+  const carrito = leerCarrito(); // trae el carrito guardado
+  lista.replaceChildren(); // borra las filas anteriores para dibujar de cero
+  let sumaCantidades = 0; // acumulador de unidades
+  let sumaTotal = 0; // acumulador de plata
+
+  carrito.forEach((item) => { // recorre cada producto guardado en el carrito
+    const producto = productos.find((p) => p.id === item.id); // busca sus datos completos en productos.js
+    if (!producto) return; // si ese id ya no existe en productos.js, lo saltea
+    const subtotal = precioDeProducto(producto) * item.cantidad; // precio × cantidad
+    sumaCantidades += item.cantidad; // suma las unidades al total de unidades
+    sumaTotal += subtotal; // suma el subtotal al total a pagar
+    lista.append(crearFilaCarrito(producto, item.cantidad, subtotal)); // arma la fila y la agrega a la lista
+  }); // fin del forEach
+
+  mensajeVacio.hidden = sumaCantidades > 0; // oculta el mensaje si hay productos; lo muestra si no hay
+  cantidadTotal.textContent = sumaCantidades; // muestra la cantidad total de unidades
+  totalCompra.textContent = formatearPrecio(sumaTotal); // muestra el total con formato de precio
+} // fin de renderizarCarrito
+
+// Crea y devuelve un <li> con la fila de un producto (misma estructura y clases que tenía el HTML de ejemplo).
+function crearFilaCarrito(producto, cantidad, subtotal) { // recibe el producto, su cantidad y su subtotal
+  const fila = document.createElement("li"); // crea el <li>
+  fila.className = "item-carrito"; // clase para que tome los estilos del CSS
+  fila.dataset.id = producto.id; // agrega data-id="N" para identificar la fila
+
+  const imagen = document.createElement("img"); // crea la imagen
+  imagen.className = "item-imagen"; // clase de estilos
+  imagen.src = `.${producto.imagen}`; // "./img/..." pasa a "../img/..." porque carrito.html está dentro de pages/
+  imagen.alt = producto.nombre; // texto alternativo con el nombre real
+  imagen.width = 100; // ancho de la imagen
+  imagen.height = 100; // alto de la imagen
+
+  const nombre = document.createElement("p"); // crea el párrafo del nombre
+  nombre.className = "item-nombre"; // clase de estilos
+  nombre.textContent = producto.nombre; // escribe el nombre del producto
+
+  const grupoCantidad = document.createElement("div"); // contenedor de −, número y +
+  grupoCantidad.className = "item-cantidad"; // clase de estilos
+  grupoCantidad.setAttribute("role", "group"); // accesibilidad: indica que los 3 elementos van juntos
+  grupoCantidad.setAttribute("aria-label", `Cantidad de ${producto.nombre}`); // accesibilidad: nombre del grupo
+
+  const botonRestar = document.createElement("button"); // crea el botón −
+  botonRestar.type = "button"; // botón común (no envía formularios)
+  botonRestar.className = "btn-restar"; // clase de estilos
+  botonRestar.textContent = "-"; // texto visible
+  botonRestar.setAttribute("aria-label", `Disminuir cantidad de ${producto.nombre}`); // accesibilidad
+  botonRestar.addEventListener("click", () => cambiarCantidad(producto.id, -1)); // al hacer clic resta 1
+
+  const valorCantidad = document.createElement("span"); // crea el número de cantidad
+  valorCantidad.className = "cantidad-valor"; // clase de estilos
+  valorCantidad.textContent = cantidad; // muestra la cantidad guardada
+
+  const botonSumar = document.createElement("button"); // crea el botón +
+  botonSumar.type = "button"; // botón común
+  botonSumar.className = "btn-sumar"; // clase de estilos
+  botonSumar.textContent = "+"; // texto visible
+  botonSumar.setAttribute("aria-label", `Aumentar cantidad de ${producto.nombre}`); // accesibilidad
+  botonSumar.addEventListener("click", () => cambiarCantidad(producto.id, 1)); // al hacer clic suma 1
+
+  grupoCantidad.append(botonRestar, valorCantidad, botonSumar); // mete −, número y + dentro del grupo
+
+  const textoSubtotal = document.createElement("p"); // crea el párrafo del subtotal
+  textoSubtotal.className = "item-subtotal"; // clase de estilos
+  textoSubtotal.textContent = `Subtotal: ${formatearPrecio(subtotal)}`; // escribe el subtotal con formato
+
+  const botonEliminar = document.createElement("button"); // crea el botón X
+  botonEliminar.type = "button"; // botón común
+  botonEliminar.className = "btn-eliminar"; // clase de estilos
+  botonEliminar.textContent = "X"; // texto visible
+  botonEliminar.setAttribute("aria-label", `Eliminar ${producto.nombre} del carrito`); // accesibilidad
+  botonEliminar.addEventListener("click", () => eliminarDelCarrito(producto.id)); // al hacer clic lo elimina
+
+  fila.append(imagen, nombre, grupoCantidad, textoSubtotal, botonEliminar); // arma la fila con todas las partes
+  return fila; // devuelve la fila lista para agregar a la lista
+} // fin de crearFilaCarrito
+
+// Suma o resta unidades a un producto del carrito (cambio vale 1 o -1) y vuelve a dibujar.
+function cambiarCantidad(idProducto, cambio) { // recibe el id del producto y +1 o -1
+  const carrito = leerCarrito(); // trae el carrito guardado
+  const item = carrito.find((i) => i.id === idProducto); // busca ese producto en el carrito
+  if (!item) return; // si no está, no hace nada
+  if (item.cantidad + cambio < 1) return; // no deja bajar de 1 (para sacarlo se usa la X)
+  item.cantidad += cambio; // aplica el cambio
+  guardarCarrito(carrito); // guarda y actualiza el contador del header
+  renderizarCarrito(); // vuelve a dibujar la lista y los totales
+} // fin de cambiarCantidad
+
+// Saca un producto del carrito y vuelve a dibujar.
+function eliminarDelCarrito(idProducto) { // recibe el id del producto a sacar
+  const carrito = leerCarrito().filter((i) => i.id !== idProducto); // se queda con todos menos ese
+  guardarCarrito(carrito); // guarda y actualiza el contador del header
+  renderizarCarrito(); // vuelve a dibujar la lista y los totales
+} // fin de eliminarDelCarrito
+
 // ============================ Carrusel ============================
 function activarFlechasCarrusel(contenedor) {
   const tarjeta = contenedor.querySelector(".tarjeta-producto");

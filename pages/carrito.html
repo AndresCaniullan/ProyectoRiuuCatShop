@@ -33,7 +33,7 @@
       <a href="#" class="btn-ingresar">Ingresar →</a>
       <a href="carrito.html" class="icono-carrito" aria-label="Ver carrito de compras" aria-current="page">
         <img src="../img/icono-carrito.png" alt="" width="30" height="30">
-        <span id="contador-carrito" class="contador-carrito">3</span>
+        <span id="contador-carrito" class="contador-carrito">0</span>
       </a>
     </nav>
   </header>
@@ -45,9 +45,8 @@
 
     <div class="contenido-carrito">
 
-      <!-- Lista de productos: las filas reales las genera app.js desde localStorage
-           (cada li debería llevar data-id con el id del producto); las de abajo son
-           un ejemplo estático de la estructura, mientras esa función no exista -->
+      <!-- Lista de productos: las filas las genera renderizarCarrito() en app.js
+           a partir del carrito guardado en localStorage -->
       <section class="lista-carrito" aria-labelledby="titulo-lista">
         <h2 id="titulo-lista">Productos seleccionados</h2>
 
@@ -55,56 +54,14 @@
           Tu carrito está vacío. <a href="../index.html">Seguir comprando</a>
         </p>
 
-        <ul id="lista-carrito" class="lista-productos-carrito">
-          <li class="item-carrito" data-id="1">
-            <img class="item-imagen" src="../img/categoria-alimento.jpeg" alt="Nombre del producto" width="100" height="100">
-            <p class="item-nombre">Nombre del producto</p>
-            <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
-              <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
-              <span class="cantidad-valor" aria-live="polite">1</span>
-              <button type="button" class="btn-sumar" aria-label="Aumentar cantidad de Nombre del producto">+</button>
-            </div>
-            <p class="item-subtotal">Subtotal: <span class="valor-subtotal">$ 0,00</span></p>
-            <button type="button" class="btn-eliminar" aria-label="Eliminar Nombre del producto del carrito">
-              <span aria-hidden="true">X</span>
-            </button>
-          </li>
-
-          <li class="item-carrito" data-id="2">
-            <img class="item-imagen" src="../img/categoria-juguete.jpeg" alt="Nombre del producto" width="100" height="100">
-            <p class="item-nombre">Nombre del producto</p>
-            <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
-              <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
-              <span class="cantidad-valor" aria-live="polite">1</span>
-              <button type="button" class="btn-sumar" aria-label="Aumentar cantidad de Nombre del producto">+</button>
-            </div>
-            <p class="item-subtotal">Subtotal: <span class="valor-subtotal">$ 0,00</span></p>
-            <button type="button" class="btn-eliminar" aria-label="Eliminar Nombre del producto del carrito">
-              <span aria-hidden="true">X</span>
-            </button>
-          </li>
-
-          <li class="item-carrito" data-id="3">
-            <img class="item-imagen" src="../img/categoria-accesorio.jpeg" alt="Nombre del producto" width="100" height="100">
-            <p class="item-nombre">Nombre del producto</p>
-            <div class="item-cantidad" role="group" aria-label="Cantidad de Nombre del producto">
-              <button type="button" class="btn-restar" aria-label="Disminuir cantidad de Nombre del producto">-</button>
-              <span class="cantidad-valor" aria-live="polite">1</span>
-              <button type="button" class="btn-sumar" aria-label="Aumentar cantidad de Nombre del producto">+</button>
-            </div>
-            <p class="item-subtotal">Subtotal: <span class="valor-subtotal">$ 0,00</span></p>
-            <button type="button" class="btn-eliminar" aria-label="Eliminar Nombre del producto del carrito">
-              <span aria-hidden="true">X</span>
-            </button>
-          </li>
-        </ul>
+        <ul id="lista-carrito" class="lista-productos-carrito"></ul>
       </section>
 
       <!-- Resumen de compra -->
       <aside class="resumen-compra" aria-labelledby="titulo-resumen">
         <h2 id="titulo-resumen">Resumen de compra</h2>
-        <p class="resumen-cantidad">Cantidad de productos: <span id="cantidad-total" aria-live="polite">3</span></p>
-        <p class="resumen-total">Total: <span id="total-compra" aria-live="polite">$ 0,00</span></p>
+        <p class="resumen-cantidad">Cantidad de productos: <span id="cantidad-total" aria-live="polite">0</span></p>
+        <p class="resumen-total">Total: <span id="total-compra" aria-live="polite">$ 0</span></p>
         <button type="button" id="btn-finalizar" class="btn-finalizar">Finalizar compra</button>
       </aside>
     </div>
