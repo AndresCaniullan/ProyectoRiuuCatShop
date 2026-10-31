@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarContadorCarrito();
   activarFinalizarCompra();
   renderizarDetalleProducto();
-  renderizarRelacionados(producto);   //  nueva
   renderizarPublicidad();
 });
 // ============================ Carrito ============================
@@ -364,115 +363,6 @@ function activarRotacionAutomatica() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// ============================ Catálogo (ofertas, filtros y búsqueda) ============================
-
-// // Estado actual de los filtros. renderizarOfertas() lee este objeto cada vez que se dibuja.
-// const filtros = { categoria: null, texto: "" };
-
-// // Nombre "lindo" de cada categoría, para usarlo como título del catálogo.
-// const NOMBRES_CATEGORIA = {
-//   alimento: "Alimento",
-//   sanitario: "Sanitario",
-//   juguetes: "Juguetes",
-//   accesorios: "Accesorios",
-//   vestimenta: "Vestimenta"
-// };
-
-// // Pasa a minúsculas y quita tildes, así "camisa" encuentra "Camisá" y "BUZO" encuentra "buzo".
-// function normalizarTexto(texto) {
-//   return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-// }
-
-// // Devuelve los productos que corresponde mostrar según los filtros activos.
-// // - Sin filtros: solo los productos en oferta (el carrusel de la portada).
-// // - Con categoría y/o texto: todos los productos del catálogo que coincidan.
-// function obtenerProductosAMostrar() {
-//   const texto = normalizarTexto(filtros.texto);
-//   const hayFiltros = filtros.categoria !== null || texto !== "";
-
-//   return productos.filter((producto) => {
-//     if (producto.categoria === "publicidad") return false; // la publicidad nunca es un producto a la venta
-//     if (!hayFiltros) return producto.oferta;
-//     const coincideCategoria = filtros.categoria === null || producto.categoria === filtros.categoria;
-//     const coincideTexto = texto === "" || normalizarTexto(producto.nombre).includes(texto);
-//     return coincideCategoria && coincideTexto;
-//   });
-// }
-
-// // Texto del título (<h2>) según lo que se esté mostrando.
-// function obtenerTituloCatalogo() {
-//   const texto = filtros.texto.trim();
-//   if (texto && filtros.categoria) {
-//     return `Resultados para "${texto}" en ${NOMBRES_CATEGORIA[filtros.categoria]}`;
-//   }
-//   if (texto) return `Resultados para "${texto}"`;
-//   if (filtros.categoria) return NOMBRES_CATEGORIA[filtros.categoria];
-//   return "Ofertas destacadas";
-// }
-
-// // Pinta las tarjetas de producto dentro de #contenedor-ofertas (index.html),
-// // según los filtros activos (ver obtenerProductosAMostrar).
-// function renderizarOfertas() {
-//   const contenedor = document.querySelector("#contenedor-ofertas");
-//   if (!contenedor) return;
-//   if (typeof productos === "undefined" || !Array.isArray(productos)) return;
-
-//   document.querySelector("#titulo-catalogo").textContent = obtenerTituloCatalogo();
-
-//   const lista = obtenerProductosAMostrar();
-//   contenedor.replaceChildren();
-//   contenedor.scrollLeft = 0; // vuelve al principio del carrusel
-
-//   if (lista.length === 0) {
-//     const vacio = document.createElement("p");
-//     vacio.textContent = "No se encontraron productos.";
-//     contenedor.append(vacio);
-//     return;
-//   }
-
-//   lista.forEach((producto) => {
-//     const tarjeta = document.createElement("a");
-//     tarjeta.className = "tarjeta-producto";
-//     tarjeta.href = `pages/producto.html?id=${producto.id}`;
-
-//     const imagen = document.createElement("img");
-//     imagen.src = producto.imagen;
-//     imagen.alt = producto.nombre;
-
-//     const nombre = document.createElement("h3");
-//     nombre.textContent = producto.nombre;
-
-//     // El precio que se muestra es el mismo que se cobra en el carrito (precioFinal si hay descuento).
-//     const precio = document.createElement("p");
-//     precio.className = "precio";
-//     if (producto.precioFinal !== undefined) {
-//       const precioOriginal = document.createElement("del"); // <del>: precio anterior tachado
-//       precioOriginal.textContent = formatearPrecio(producto.precio);
-//       const etiqueta = document.createElement("span");
-//       etiqueta.className = "etiqueta-descuento";
-//       etiqueta.textContent = `-${producto.descuento}%`;
-//       precio.append(precioOriginal, ` ${formatearPrecio(precioDeProducto(producto))} `, etiqueta);
-//     } else {
-//       precio.textContent = formatearPrecio(precioDeProducto(producto));
-//     }
-
-//     tarjeta.append(imagen, nombre, precio);
-//     contenedor.append(tarjeta);
-//   });
-// }
-
 // ============================ Catálogo (ofertas y resultados) ============================
 
 // Estado actual de los filtros. renderizarCatalogo() lee este objeto cada vez que se dibuja.
@@ -804,11 +694,9 @@ function renderizarPublicidad() {
   });
 }
 
-
 // ============================ Detalle de producto ============================
 
-// Arma el HTML del detalle de producto dentro de #detalle-producto (pages/producto.html),
-// buscando en data/productos.js el producto cuyo id llega por query string (?id=N).
+// Arma el HTML del detalle de producto dentro de #detalle-producto (pages/producto.html)
 function renderizarDetalleProducto() {
   const contenedor = document.getElementById("detalle-producto");
   if (!contenedor) return;
@@ -822,45 +710,8 @@ function renderizarDetalleProducto() {
     return;
   }
 
-// ============================ Productos relacionados (Andrés) ============================
-
-// Muestra hasta 4 productos de la misma categoría que el producto abierto (sin contar el mismo).
-// Si no hay ninguno, la sección queda oculta.
-function renderizarRelacionados(producto) {
-  const seccion = document.querySelector("#productos-relacionados");
-  const grilla = document.querySelector("#relacionados-grid");
-  if (!seccion || !grilla) return;
-
-  const relacionados = productos
-    .filter((otro) => otro.categoria === producto.categoria && otro.id !== producto.id)
-    .slice(0, 4);
-
-  seccion.hidden = relacionados.length === 0;
-  grilla.replaceChildren();
-
-  relacionados.forEach((otro) => {
-    const enlace = document.createElement("a");
-    enlace.className = "relacionado";
-    enlace.href = `producto.html?id=${otro.id}`; // producto.html está en la misma carpeta (pages/)
-
-    const imagen = document.createElement("img");
-    imagen.src = `.${otro.imagen}`; // "./img/..." pasa a "../img/..."
-    imagen.alt = otro.nombre;
-    imagen.width = 150;
-    imagen.height = 150;
-
-    const nombre = document.createElement("p");
-    nombre.textContent = otro.nombre;
-
-    const precio = document.createElement("p");
-    precio.className = "relacionado-precio";
-    precio.textContent = formatearPrecio(precioDeProducto(otro));
-
-    enlace.append(imagen, nombre, precio);
-    grilla.append(enlace);
-  });
-}
-
+  // Llamamos a los relacionados aquí, donde la variable "producto" SÍ existe
+  renderizarRelacionados(producto);
 
   contenedor.innerHTML = `
     <div class="producto-imagen">
@@ -882,4 +733,42 @@ function renderizarRelacionados(producto) {
       </div>
     </div>
   `;
+}
+
+// ============================ Productos relacionados (Andrés) ============================
+
+// Muestra hasta 4 productos de la misma categoría que el producto abierto
+function renderizarRelacionados(producto) {
+  const seccion = document.querySelector("#productos-relacionados");
+  const grilla = document.querySelector("#relacionados-grid");
+  if (!seccion || !grilla) return;
+
+  const relacionados = productos
+    .filter((otro) => otro.categoria === producto.categoria && otro.id !== producto.id)
+    .slice(0, 4);
+
+  seccion.hidden = relacionados.length === 0;
+  grilla.replaceChildren();
+
+  relacionados.forEach((otro) => {
+    const enlace = document.createElement("a");
+    enlace.className = "relacionado";
+    enlace.href = `producto.html?id=${otro.id}`; 
+
+    const imagen = document.createElement("img");
+    imagen.src = `.${otro.imagen}`; 
+    imagen.alt = otro.nombre;
+    imagen.width = 150;
+    imagen.height = 150;
+
+    const nombre = document.createElement("p");
+    nombre.textContent = otro.nombre;
+
+    const precio = document.createElement("p");
+    precio.className = "relacionado-precio";
+    precio.textContent = formatearPrecio(precioDeProducto(otro));
+
+    enlace.append(imagen, nombre, precio);
+    grilla.append(enlace);
+  });
 }

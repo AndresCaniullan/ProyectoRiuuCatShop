@@ -54,13 +54,14 @@ const productos = [
 },
 {
   id: 6,
-  nombre: "Publicidad Radio Allen FM 90.8",
+  nombre: "La Anónima - Accesorios para mascotas",
   categoria: "publicidad",
-  tipo: "radio",
-  imagen: "./img/publicidad-radio-6.jpeg", //  nombre de archivo que mencionaste
-  descripcion: "Campaña publicitaria de la emisora Allen FM 90.8. Suscríbete y escucha en vivo en www.salganalsol.com.ar.",
-  oferta: false, //  no es una oferta de catálogo
-  destacado: true // aparece en el bloque de publicidad
+  tipo: "accesorios",
+  imagen: "./img/publicidad-laanonima-6.jpg",
+  enlace: "https://www.laanonima.com.ar/accesorios/n3_323/", // al hacer clic en la imagen abre esta página
+  descripcion: "Publicidad de accesorios de La Anónima.",
+  oferta: false,
+  destacado: true
 },
 {
   id: 7,
@@ -100,13 +101,29 @@ const productos = [
 },
 {
   id: 11,
-  nombre: "La Anónima - Accesorios para mascotas",
-  categoria: "publicidad",
-  tipo: "accesorios",
-  imagen: "./img/publicidad-laanonima-11.jpg",
-  enlace: "https://www.laanonima.com.ar/accesorios/n3_323/", // al hacer clic en la imagen abre esta página
-  descripcion: "Publicidad de accesorios de La Anónima.",
+  nombre: "Rascador de cartón corrugado",
+  precio: 6500,
   oferta: false,
-  destacado: true
+  categoria: "juguetes",
+  imagen: "./img/juguete-rascador-carton-11.jpg", 
+  descripcion: "Rascador horizontal de cartón corrugado de alta densidad. Incluye sobrecito de catnip para estimular a tu gato y proteger tus muebles."
+},
+{
+  id: 12,
+  nombre: "Ratón interactivo a pila",
+  precio: 8900,
+  oferta: false,
+  categoria: "juguetes",
+  imagen: "./img/juguete-raton-pila-12.jpg",
+  descripcion: "Juguete interactivo con forma de ratón que se mueve de manera impredecible para atrapar la atención de tu gato. Funciona con 2 pilas AAA (no incluidas)."
+},
+{
+  id: 13,
+  nombre: "Túnel plegable de 3 vías",
+  precio: 12400,
+  oferta: false,
+  categoria: "juguetes",
+  imagen: "./img/juguete-tunel-plegable-13.jpg",
+  descripcion: "Túnel de tela resistente con tres entradas y una mirilla central. Incluye un juguete colgante en una de las bocas. Fácil de plegar y guardar."
 }
 ];
