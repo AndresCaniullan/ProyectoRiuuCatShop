@@ -49,6 +49,11 @@ body {
 
 a { text-decoration: none; color: inherit; }
 
+/* Margen lateral del contenido principal en todas las páginas (alineado con el header) */
+main {
+  padding: 0 24px 40px;
+}
+
 /* ===== Header ===== */
 .header-principal {
   display: flex;
@@ -83,6 +88,7 @@ a { text-decoration: none; color: inherit; }
   border: 1px solid var(--color-borde);
   border-radius: var(--radio) 0 0 var(--radio);
   font-size: 1rem;
+  min-width: 0; /* permite que el campo se achique en pantallas chicas */
 }
 
 .buscador button {
@@ -173,7 +179,6 @@ a { text-decoration: none; color: inherit; }
 .contenido-principal {
   display: flex;
   gap: 20px;
-  padding: 0 24px 40px;
   align-items: flex-start;
 }
 
@@ -266,6 +271,13 @@ a { text-decoration: none; color: inherit; }
 
 .lista-carrito { flex: 2; } /* ocupa más espacio que el resumen */
 
+/* Saca la sangría y las viñetas que el navegador le pone por defecto a la lista */
+.lista-productos-carrito {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .resumen-compra {
   flex: 1;
   border: 1px solid #ccc;
@@ -323,7 +335,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .btn-finalizar:hover {
-  background: var(--color-principal);
+  background: var(--color-primario);
 }
 
 /* ===== Detalle de producto ===== */
@@ -443,4 +455,11 @@ a { text-decoration: none; color: inherit; }
 
   .categorias ul { flex-direction: column; align-items: stretch; }
   .categoria { width: 100%; height: auto; flex-direction: row; justify-content: flex-start; border-radius: var(--radio); }
+
+  /* Carrito: la lista y el resumen pasan a estar uno debajo del otro */
+  .contenido-carrito { flex-direction: column; align-items: stretch; }
+  /* Cada fila pasa de 5 columnas a 3: imagen | nombre y subtotal | cantidad y X */
+  .item-carrito { grid-template-columns: 70px 1fr auto; }
+  .item-imagen { width: 70px; height: 70px; grid-row: span 2; }
+  .item-subtotal { grid-column: 2; }
 }
